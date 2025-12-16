@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<h2>Admin Login</h2>
+
+<input id="email" placeholder="Email"><br>
+<input id="password" type="password" placeholder="Password"><br>
+<button onclick="login()">Login</button>
+
+<script type="module">
+import { supabaseAdmin } from "./js/supabase-admin.js";
+
+window.login = async () => {
+  const { data, error } = await supabaseAdmin.auth.signInWithPassword({
+    email: email.value,
+    password: password.value,
+  });
+
+  if (error) return alert(error.message);
+
+  const { data: profile } = await supabaseAdmin
+    .from("profiles")
+    .select("role")
+    .eq("id", data.user.id)
+    .single();
+
+  if (profile.role !== "admin") {
+    alert("Not admin");
+    return;
+  }
+
+  location.href = "dashboard.html";
+};
+</script>
+
+</body>
+</html>
