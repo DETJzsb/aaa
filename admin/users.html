@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Users</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<h1>Users Management</h1>
+
+<h3>Ajouter User</h3>
+<input id="email" placeholder="Email">
+<input id="password" placeholder="Password">
+<input id="role" placeholder="Role">
+<input id="department" placeholder="Department">
+<input id="part" placeholder="Part">
+<input id="line" placeholder="Line">
+<input id="zone" placeholder="Zone">
+<button onclick="addUser()">Add</button>
+
+<hr>
+
+<h3>Supprimer User</h3>
+<input id="deleteId" placeholder="User ID">
+<button onclick="deleteUser()">Delete</button>
+
+<hr>
+
+<h3>Changer Role</h3>
+<input id="roleId" placeholder="User ID">
+<input id="newRole" placeholder="New Role">
+<button onclick="changeRole()">Change</button>
+
+<script type="module" src="js/users.js"></script>
+</body>
+</html>
