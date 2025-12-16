@@ -12,6 +12,16 @@
 
 <script type="module">
 import { supabase } from "./js/supabase-admin.js"
+  
+const { data: allProfiles, error: allErr } = await supabase
+  .from("profiles")
+  .select("*")
+
+console.log("ALL PROFILES:", allProfiles, allErr)
+
+allProfiles?.forEach(p => {
+  console.log("PROFILE ID:", p.id, "== USER ID ?", p.id === user.id)
+})
 
 window.login = async function () {
   const email = document.getElementById("email").value
