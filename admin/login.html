@@ -23,7 +23,9 @@ window.login = async () => {
   });
 
   if (error) return alert(error.message);
+const user = data.user
 
+  console.log("AUTH USER ID:", user.id) // 👈 هنا
   const { data: profile } = await supabaseAdmin
     .from("profiles")
     .select("role")
