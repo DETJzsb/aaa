@@ -1,50 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin Login</title>
-  <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 
-<h2>Admin Login</h2>
-
-<input id="email" placeholder="Email"><br>
-<input id="password" type="password" placeholder="Password"><br>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
 <button onclick="login()">Login</button>
 
 <script type="module">
-import { supabaseAdmin } from "./js/supabase-admin.js";
+import { supabase } from "./js/supabase.js"
 
-window.login = async () => {
-  const { data, error } = await supabaseAdmin.auth.signInWithPassword({
-    email: email.value,
-    password: password.value,
-  });
+window.login = async function () {
+  const email = document.getElementById("email").value
+  const password = document.getElementById("password").value
 
-  if (error) return alert(error.message);
-  const { data, error } = await supabase
-  .from("profiles")
-  .select("*")
+  const { data: authData, error: authError } =
+    await supabase.auth.signInWithPassword({ email, password })
 
-console.log("ALL PROFILES:", data, error)
-
-const user = data.user
-
-  console.log("AUTH USER ID:", user.id) // 👈 هنا
-  const { data: profile } = await supabaseAdmin
-    .from("profiles")
-    .select("role")
-    .eq("id", data.user.id)
-    .maybeSingle()
-
-  if (profile.role !== "admin") {
-    alert("Not admin");
-    return;
+  if (authError) {
+    alert(authError.message)
+    return
   }
 
-  location.href = "dashboard.html";
-};
+  const user = authData.user
+  console.log("AUTH USER ID:", user.id)
+
+  const { data: profile, error: profileError } =
+    await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle()
+
+  console.log("PROFILE:", profile, profileError)
+
+  if (!profile) {
+    alert("Profile not found")
+    return
+  }
+
+  if (profile.role !== "admin") {
+    alert("Not admin")
+    return
+  }
+
+  window.location.href = "/admin/index.html"
+}
 </script>
 
 </body>
