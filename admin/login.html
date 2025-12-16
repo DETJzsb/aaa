@@ -23,6 +23,12 @@ window.login = async () => {
   });
 
   if (error) return alert(error.message);
+  const { data, error } = await supabase
+  .from("profiles")
+  .select("*")
+
+console.log("ALL PROFILES:", data, error)
+
 const user = data.user
 
   console.log("AUTH USER ID:", user.id) // 👈 هنا
