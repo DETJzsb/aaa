@@ -28,7 +28,7 @@ window.login = async () => {
     .from("profiles")
     .select("role")
     .eq("id", data.user.id)
-    .single();
+    .maybeSingle()
 
   if (profile.role !== "admin") {
     alert("Not admin");
