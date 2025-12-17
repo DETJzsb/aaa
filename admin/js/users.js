@@ -103,11 +103,28 @@ window.addUser = async () => {
   const role = document.getElementById("role").value;
   const dep = department.value;
 
-  const { data } = await supabase.auth.admin.createUser({
-    email: mail,
-    password: "Temp@1234",
-    email_confirm: true,
-  });
+  window.addUser = async () => {
+  const payload = {
+    email: email.value,
+    full_name: fullName.value,
+    role: role.value,
+    department: department.value,
+    admin_id: adminId,
+  };
+
+  const { error } = await supabase.functions.invoke(
+    "admin-create-user",
+    { body: payload }
+  );
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  closeModal();
+  fetchUsers();
+};
 
   const id = data.user.id;
 
