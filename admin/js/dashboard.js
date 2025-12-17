@@ -23,7 +23,7 @@ let searchValue = "";
 let filterConfirmed = "all";
 
 /* =========================
-   ROLE → TABLE MAP
+   ROLE → DETAILS TABLE
 ========================= */
 const ROLE_TABLE = {
   admin: "admin_details",
@@ -35,13 +35,13 @@ const ROLE_TABLE = {
 };
 
 /* =========================
-   FETCH USERS (FINAL)
+   FETCH USERS
 ========================= */
 async function fetchUsers() {
-  // 1️⃣ get profiles (ID + ROLE ONLY)
+  // 1️⃣ fetch profiles (ONLY id + role)
   const { data: profiles, error } = await supabase
     .from("profiles")
-    .select("id, role, confirmed, confirmed_at, confirmed_by, created_at")
+    .select("id, role, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -49,30 +49,35 @@ async function fetchUsers() {
     return;
   }
 
-  // 2️⃣ fetch details per user
   const users = [];
 
+  // 2️⃣ fetch role details
   for (const p of profiles) {
     const table = ROLE_TABLE[p.role];
     let details = {};
 
     if (table) {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from(table)
         .select("*")
         .eq("user_id", p.id)
         .single();
 
-      details = data || {};
+      if (!error && data) {
+        details = data;
+      }
     }
 
     users.push({
       id: p.id,
       role: p.role,
-      confirmed: p.confirmed,
-      confirmed_at: p.confirmed_at,
-      confirmed_by: p.confirmed_by,
       created_at: p.created_at,
+
+      // confirmation FROM ROLE TABLE
+      confirmed: details.confirmed ?? false,
+      confirmed_at: details.confirmed_at ?? null,
+      confirmed_by: details.confirmed_by ?? null,
+
       ...details
     });
   }
@@ -154,21 +159,28 @@ function renderTable() {
 }
 
 /* =========================
-   APPROVE USER
+   APPROVE USER (ROLE CONFIRM)
 ========================= */
 window.approveUser = async function (userId) {
   const {
     data: { user }
   } = await supabase.auth.getUser();
 
+  // نجيب role متاع الuser
+  const current = allUsers.find(u => u.id === userId);
+  if (!current) return;
+
+  const table = ROLE_TABLE[current.role];
+  if (!table) return;
+
   const { error } = await supabase
-    .from("profiles")
+    .from(table)
     .update({
       confirmed: true,
       confirmed_at: new Date().toISOString(),
       confirmed_by: user.id
     })
-    .eq("id", userId);
+    .eq("user_id", userId);
 
   if (error) {
     alert(error.message);
