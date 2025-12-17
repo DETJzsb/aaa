@@ -12,6 +12,7 @@
   <a href="index.html">Dashboard</a>
   <a href="users.html">Users</a>
   <a class="active">Historic</a>
+  <a href="#" id="logoutBtn" style="margin-top:30px;color:#ef4444">Logout</a>
 </div>
 
 <div class="main">
@@ -27,7 +28,15 @@
 
 <script type="module" src="js/admin-auth.js"></script>
 <script type="module" src="js/history.js"></script>
-<a href="#" id="logoutBtn" style="margin-top:30px;color:#ef4444">Logout</a>
+<script type="module">
+  import { supabase } from './js/supabase-admin.js';
+
+  document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    location.href = 'login.html';
+  });
+</script>
+
 
 </body>
 </html>
