@@ -12,7 +12,7 @@ const { count: agents } = await supabase
   .select("*", { count: "exact", head: true })
   .eq("role", "agent");
 
-document.getElementById("stats").innerHTML = `
+document.getElementById("stats").innerHTML = count;
   <p>Total Users: ${totalUsers}</p>
   <p>Agents: ${agents}</p>
 `;
