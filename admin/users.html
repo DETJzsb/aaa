@@ -7,39 +7,32 @@
 </head>
 <body>
 
-<!-- ================= SIDEBAR ================= -->
+<!-- ========== SIDEBAR ========== -->
 <div class="sidebar">
   <h2 class="logo">ADMIN</h2>
   <a href="index.html">Dashboard</a>
   <a class="active">Users</a>
   <a href="history.html">Historic</a>
-  <a href="#" id="logoutBtn" style="margin-top:30px;color:#ef4444">
-    Logout
-  </a>
+  <a href="#" id="logoutBtn" style="margin-top:30px;color:#ef4444">Logout</a>
 </div>
 
-<!-- ================= MAIN ================= -->
+<!-- ========== MAIN ========== -->
 <div class="main">
 
   <!-- TOPBAR -->
   <div class="topbar">
     <h1>Users Management</h1>
-    <button class="btn primary" onclick="openAdd()">
-      + Add User
-    </button>
+    <button class="btn primary" onclick="openAdd()">+ Add User</button>
   </div>
 
-  <!-- USERS TABLE -->
+  <!-- SEARCH -->
+  <div class="card" style="margin-bottom:10px">
+    <input id="searchInput" placeholder="Search by name or email" />
+    <button class="btn ghost" onclick="applySearch()">Search</button>
+  </div>
+
+  <!-- TABLE -->
   <div class="card">
-
-    <!-- SEARCH -->
-    <input
-      type="text"
-      placeholder="Search by name or email"
-      oninput="searchUsers(this.value)"
-      style="margin-bottom:12px;width:260px"
-    />
-
     <table class="table">
       <thead>
         <tr>
@@ -51,17 +44,15 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody id="users-table">
-        <!-- filled by users.js -->
-      </tbody>
+      <tbody id="users-table"></tbody>
     </table>
   </div>
 </div>
 
-<!-- ================= ADD USER MODAL ================= -->
+<!-- ========== ADD USER MODAL ========== -->
 <div class="modal" id="userModal">
   <div class="modal-card">
-    <h3 id="modalTitle">Add User</h3>
+    <h3>Add User</h3>
 
     <input id="fullName" placeholder="Full name *" />
     <input id="email" placeholder="Email *" />
@@ -75,7 +66,6 @@
       <option value="agent">Agent</option>
     </select>
 
-    <!-- DEPARTMENT -->
     <select id="department" style="display:none">
       <option value="">Select department *</option>
       <option>ZSB</option>
@@ -91,12 +81,22 @@
   </div>
 </div>
 
-<!-- ================= DELETE MODAL ================= -->
+<!-- ========== DETAILS MODAL ========== -->
+<div class="modal" id="detailsModal">
+  <div class="modal-card">
+    <h3>User Details</h3>
+    <pre id="detailsContent"></pre>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeDetails()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== DELETE MODAL ========== -->
 <div class="modal" id="deleteModal">
   <div class="modal-card">
     <h3>Delete user?</h3>
     <p class="muted">This action cannot be undone.</p>
-
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeDelete()">Cancel</button>
       <button class="btn danger" onclick="confirmDelete()">Delete</button>
@@ -104,55 +104,42 @@
   </div>
 </div>
 
-<!-- ================= SCRIPTS ================= -->
+<!-- ========== SCRIPTS ========== -->
 <script type="module" src="js/admin-auth.js"></script>
 <script type="module" src="js/supabase-admin.js"></script>
 <script type="module" src="js/users.js"></script>
 
-<!-- ================= UI HELPERS ================= -->
+<!-- ========== UI HELPERS ========== -->
 <script>
   let deleteUserId = null;
 
   function openAdd() {
-    document.getElementById("modalTitle").innerText = "Add User";
     document.getElementById("userModal").classList.add("show");
   }
-
   function closeModal() {
     document.getElementById("userModal").classList.remove("show");
   }
-
   function handleRoleChange() {
     const role = document.getElementById("role").value;
     const dep = document.getElementById("department");
-
-    if (
-      role === "directeur" ||
-      role === "sous-directeur" ||
-      role === "supervisor" ||
-      role === "agent"
-    ) {
-      dep.style.display = "block";
-    } else {
-      dep.style.display = "none";
-      dep.value = "";
-    }
+    dep.style.display =
+      role === "admin" ? "none" : "block";
   }
 
   function askDelete(id) {
     deleteUserId = id;
-    document.getElementById("deleteModal").classList.add("show");
+    deleteModal.classList.add("show");
   }
-
   function closeDelete() {
-    document.getElementById("deleteModal").classList.remove("show");
+    deleteModal.classList.remove("show");
+  }
+  function confirmDelete() {
+    deleteUser(deleteUserId);
+    closeDelete();
   }
 
-  function confirmDelete() {
-    if (deleteUserId) {
-      deleteUser(deleteUserId);
-      closeDelete();
-    }
+  function closeDetails() {
+    detailsModal.classList.remove("show");
   }
 </script>
 
