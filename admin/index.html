@@ -19,7 +19,7 @@
 <!-- MAIN -->
 <div class="main">
 
-  <!-- TOP -->
+  <!-- TOPBAR -->
   <div class="topbar">
     <h1>Dashboard</h1>
     <div class="user-chip">Admin</div>
@@ -58,6 +58,40 @@
     </div>
   </div>
 
+  <!-- FILTERS + SEARCH -->
+  <div class="card" style="margin-bottom:20px">
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <input
+        type="text"
+        placeholder="Search by name or email"
+        oninput="searchUsers(this.value)"
+        style="
+          padding:10px;
+          border-radius:10px;
+          border:1px solid #1e293b;
+          background:#020617;
+          color:#fff;
+          min-width:240px;
+        "
+      >
+
+      <select
+        onchange="filterUsers(this.value)"
+        style="
+          padding:10px;
+          border-radius:10px;
+          border:1px solid #1e293b;
+          background:#020617;
+          color:#fff;
+        "
+      >
+        <option value="all">All users</option>
+        <option value="confirmed">Confirmed only</option>
+        <option value="unconfirmed">Unconfirmed only</option>
+      </select>
+    </div>
+  </div>
+
   <!-- USERS TABLE -->
   <div class="card">
     <h2>All Users (Supabase View)</h2>
@@ -72,6 +106,7 @@
           <th>Confirmed</th>
           <th>Confirmed At</th>
           <th>Confirmed By</th>
+          <th>Action</th>
         </tr>
       </thead>
 
