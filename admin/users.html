@@ -7,6 +7,7 @@
 </head>
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
   <h2 class="logo">ADMIN</h2>
   <a href="index.html">Dashboard</a>
@@ -14,28 +15,137 @@
   <a href="history.html">Historic</a>
 </div>
 
+<!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <h1>Users</h1>
-    <div class="user-chip">Admin</div>
+    <h1>Users Management</h1>
+    <button class="btn primary" onclick="openAdd()">+ Add User</button>
   </div>
 
+  <!-- USERS TABLE -->
   <div class="card">
     <table class="table">
       <thead>
         <tr>
           <th>Name</th>
+          <th>Email</th>
           <th>Role</th>
           <th>Department</th>
           <th>Status</th>
+          <th>Actions</th>
         </tr>
       </thead>
-      <tbody id="users-table"></tbody>
+      <tbody id="users-table">
+        <!-- JS يعبّيها -->
+        <!-- example row -->
+        <!--
+        <tr>
+          <td>Aymen</td>
+          <td>a@admin.com</td>
+          <td>Admin</td>
+          <td>HQ</td>
+          <td><span class="badge ok">Active</span></td>
+          <td class="actions">
+            <button onclick="openEdit()">✏️</button>
+            <button onclick="openRole()">🔁</button>
+            <button class="danger" onclick="openDelete()">🗑</button>
+          </td>
+        </tr>
+        -->
+      </tbody>
     </table>
+  </div>
+</div>
+
+<!-- ADD / EDIT USER MODAL -->
+<div class="modal" id="userModal">
+  <div class="modal-card">
+    <h3 id="modalTitle">Add User</h3>
+
+    <input placeholder="Full name" />
+    <input placeholder="Email" />
+
+    <select>
+      <option>Admin</option>
+      <option>Directeur</option>
+      <option>Supervisor</option>
+      <option>Agent</option>
+    </select>
+
+    <select>
+      <option>HQ</option>
+      <option>ZSB</option>
+      <option>R-S</option>
+    </select>
+
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn primary">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="modal" id="deleteModal">
+  <div class="modal-card">
+    <h3>Delete user?</h3>
+    <p class="muted">This action cannot be undone.</p>
+
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeDelete()">Cancel</button>
+      <button class="btn danger">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE ROLE -->
+<div class="modal" id="roleModal">
+  <div class="modal-card">
+    <h3>Change Role</h3>
+
+    <select>
+      <option>Admin</option>
+      <option>Directeur</option>
+      <option>Supervisor</option>
+      <option>Agent</option>
+    </select>
+
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeRole()">Cancel</button>
+      <button class="btn primary">Transfer</button>
+    </div>
   </div>
 </div>
 
 <script type="module" src="js/admin-auth.js"></script>
 <script type="module" src="js/users.js"></script>
+
+<!-- UI ONLY JS -->
+<script>
+  const openAdd = () => {
+    document.getElementById('modalTitle').innerText = 'Add User';
+    document.getElementById('userModal').classList.add('show');
+  }
+  const openEdit = () => {
+    document.getElementById('modalTitle').innerText = 'Edit User';
+    document.getElementById('userModal').classList.add('show');
+  }
+  const closeModal = () => {
+    document.getElementById('userModal').classList.remove('show');
+  }
+  const openDelete = () => {
+    document.getElementById('deleteModal').classList.add('show');
+  }
+  const closeDelete = () => {
+    document.getElementById('deleteModal').classList.remove('show');
+  }
+  const openRole = () => {
+    document.getElementById('roleModal').classList.add('show');
+  }
+  const closeRole = () => {
+    document.getElementById('roleModal').classList.remove('show');
+  }
+</script>
+
 </body>
 </html>
