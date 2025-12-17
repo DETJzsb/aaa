@@ -1,183 +1,167 @@
 import { supabase } from "./supabase-admin.js";
 import { checkAdmin } from "./admin-auth.js";
 
+/* =========================
+   AUTH
+========================= */
 const adminId = await checkAdmin();
 
-let allUsers = [];
-let searchValue = "";
+/* =========================
+   ELEMENTS
+========================= */
+const tableBody = document.getElementById("users-table");
 
-const ROLE_TABLE = {
-  admin: "admin_details",
-  directeur: "directeur_details",
-  "sous-directeur": "sous_directeur_details",
-  supervisor: "supervisor_details",
-  agent: "agent_details",
-};
-
-/* ================= FETCH USERS ================= */
-async function fetchUsers() {
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id, role");
-
-  const users = [];
-
-  for (const p of profiles) {
-    const table = ROLE_TABLE[p.role];
-    let d = {};
-
-    if (table) {
-      const { data } = await supabase
-        .from(table)
-        .select("*")
-        .eq("user_id", p.id)
-        .maybeSingle();
-      if (data) d = data;
-    }
-
-    users.push({
-      id: p.id,
-      role: p.role,
-      full_name: d.full_name ?? "-",
-      email: d.email ?? "-",
-      department: d.department ?? "-",
-      confirmed: d.confirmed ?? false,
-    });
-  }
-
-  allUsers = users;
-  render();
+/* =========================
+   AUDIT LOG
+========================= */
+async function log(action, targetId = null) {
+  await supabase.from("audit_logs").insert({
+    user_id: adminId,
+    action,
+    target_user: targetId,
+    page: "users.html",
+  });
 }
 
-/* ================= RENDER ================= */
-function render() {
-  const tbody = document.getElementById("users-table");
-  tbody.innerHTML = "";
+/* =========================
+   LOAD USERS
+========================= */
+async function loadUsers() {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, role, created_at")
+    .order("created_at", { ascending: false });
 
-  let list = allUsers;
-  if (searchValue) {
-    list = list.filter(u =>
-      u.full_name.toLowerCase().includes(searchValue) ||
-      u.email.toLowerCase().includes(searchValue)
-    );
+  if (error) {
+    console.error("Load users error:", error);
+    return;
   }
 
-  list.forEach(u => {
-    tbody.innerHTML += `
+  renderUsers(data);
+}
+
+/* =========================
+   RENDER TABLE
+========================= */
+function renderUsers(users) {
+  tableBody.innerHTML = "";
+
+  users.forEach(u => {
+    tableBody.innerHTML += `
       <tr>
-        <td>${u.full_name}</td>
-        <td>${u.email}</td>
-        <td><span class="badge">${u.role}</span></td>
-        <td>${u.department}</td>
-        <td>${u.confirmed ? "YES" : "NO"}</td>
-        <td class="actions">
-          <select onchange="changeRole('${u.id}',this.value)">
-            <option value="">Change role</option>
-            ${Object.keys(ROLE_TABLE)
-              .filter(r => r !== u.role)
-              .map(r => `<option value="${r}">${r}</option>`)
-              .join("")}
+        <td>${u.id}</td>
+        <td>
+          <select onchange="changeRole('${u.id}', this.value)">
+            <option value="admin" ${u.role === "admin" ? "selected" : ""}>Admin</option>
+            <option value="directeur" ${u.role === "directeur" ? "selected" : ""}>Directeur</option>
+            <option value="sous-directeur" ${u.role === "sous-directeur" ? "selected" : ""}>Sous Directeur</option>
+            <option value="supervisor" ${u.role === "supervisor" ? "selected" : ""}>Supervisor</option>
+            <option value="agent" ${u.role === "agent" ? "selected" : ""}>Agent</option>
           </select>
-
-          ${!u.confirmed
-            ? `<button class="btn primary" onclick="confirmUser('${u.id}','${u.role}')">Confirm</button>`
-            : ""}
-
-          <button onclick="viewDetails('${u.id}')">Details</button>
-          <button class="btn danger" onclick="askDelete('${u.id}')">🗑</button>
+        </td>
+        <td>
+          <button class="btn danger" onclick="deleteUser('${u.id}')">🗑 Delete</button>
         </td>
       </tr>
     `;
   });
 }
 
-/* ================= ACTIONS ================= */
-window.applySearch = () => {
-  searchValue = searchInput.value.toLowerCase();
-  render();
+/* =========================
+   ADD USER (EDGE FUNCTION)
+========================= */
+window.addUser = async () => {
+  try {
+    const email = document.getElementById("email").value.trim();
+    const fullName = document.getElementById("fullName").value.trim();
+    const role = document.getElementById("role").value;
+    const department = document.getElementById("department").value || null;
+
+    if (!email || !fullName || !role) {
+      alert("Fill required fields");
+      return;
+    }
+
+    const res = await fetch(
+      "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/admin-create-user",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("sb-access-token")}`,
+        },
+        body: JSON.stringify({
+          email,
+          full_name: fullName,
+          role,
+          department,
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err);
+    }
+
+    const data = await res.json(); // ✅ FIX
+
+    await log("CREATE_USER", data.user_id);
+
+    alert("User ajouté avec succès ✅");
+    closeModal();
+    loadUsers();
+  } catch (err) {
+    console.error(err);
+    alert("Erreur lors de l'ajout de l'utilisateur");
+  }
 };
 
-window.addUser = async () => {
-  const name = fullName.value.trim();
-  const mail = email.value.trim();
-  const role = document.getElementById("role").value;
-  const dep = department.value;
-
-  window.addUser = async () => {
-  const payload = {
-    email: email.value,
-    full_name: fullName.value,
-    role: role.value,
-    department: department.value,
-    admin_id: adminId,
-  };
-
-  const { error } = await supabase.functions.invoke(
-    "admin-create-user",
-    { body: payload }
-  );
+/* =========================
+   CHANGE ROLE
+========================= */
+window.changeRole = async (userId, newRole) => {
+  const { error } = await supabase
+    .from("profiles")
+    .update({ role: newRole })
+    .eq("id", userId);
 
   if (error) {
     alert(error.message);
     return;
   }
 
-  closeModal();
-  fetchUsers();
+  await log("CHANGE_ROLE", userId);
 };
 
-  const id = data.user.id;
+/* =========================
+   DELETE USER
+========================= */
+window.deleteUser = async (userId) => {
+  if (!confirm("Delete this user?")) return;
 
-  await supabase.from("profiles").insert({ id, role });
-  await supabase.from(ROLE_TABLE[role]).insert({
-    user_id: id,
-    full_name: name,
-    email: mail,
-    department: dep || null,
-    confirmed: true,
-    confirmed_by: adminId,
-  });
+  const res = await fetch(
+    "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/admin-delete-user",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("sb-access-token")}`,
+      },
+      body: JSON.stringify({ user_id: userId }),
+    }
+  );
 
-  closeModal();
-  fetchUsers();
+  if (!res.ok) {
+    alert("Delete failed");
+    return;
+  }
+
+  await log("DELETE_USER", userId);
+  loadUsers();
 };
 
-window.confirmUser = async (id, role) => {
-  await supabase.from(ROLE_TABLE[role]).update({
-    confirmed: true,
-    confirmed_by: adminId,
-    confirmed_at: new Date().toISOString(),
-  }).eq("user_id", id);
-
-  fetchUsers();
-};
-
-window.changeRole = async (id, newRole) => {
-  const old = allUsers.find(u => u.id === id);
-
-  await supabase.from(ROLE_TABLE[old.role]).delete().eq("user_id", id);
-  await supabase.from("profiles").update({ role: newRole }).eq("id", id);
-  await supabase.from(ROLE_TABLE[newRole]).insert({
-    user_id: id,
-    full_name: old.full_name,
-    email: old.email,
-    department: old.department !== "-" ? old.department : null,
-    confirmed: false,
-  });
-
-  fetchUsers();
-};
-
-window.deleteUser = async (id) => {
-  await supabase.auth.admin.deleteUser(id);
-  fetchUsers();
-};
-
-window.viewDetails = (id) => {
-  const u = allUsers.find(x => x.id === id);
-  detailsContent.textContent = JSON.stringify(u, null, 2);
-  detailsModal.classList.add("show");
-};
-
-/* ================= INIT ================= */
-fetchUsers();
+/* =========================
+   INIT
+========================= */
+loadUsers();
