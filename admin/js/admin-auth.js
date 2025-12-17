@@ -1,7 +1,7 @@
-import { supabaseAdmin } from "./supabase-admin.js";
+import { supabase } from "./supabase-admin.js";
 
 export async function checkAdmin() {
-  const { data: sessionData } = await supabaseAdmin.auth.getSession();
+  const { data: sessionData } = await supabase.auth.getSession();
 
   if (!sessionData.session) {
     location.href = "login.html";
@@ -10,7 +10,7 @@ export async function checkAdmin() {
 
   const userId = sessionData.session.user.id;
 
-  const { data: profile } = await supabaseAdmin
+  const { data: profile } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", userId)
