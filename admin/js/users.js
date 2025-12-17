@@ -27,17 +27,17 @@ async function log(action, targetId = null) {
    LOAD USERS
 ========================= */
 async function loadUsers() {
-  const { data, error } = await supabase
+  const { data: users, error } = await supabase
     .from("profiles")
-    .select("id, role, created_at")
-    .order("created_at", { ascending: false });
+    .select("id, role")
+    .order("id");
 
   if (error) {
-    console.error("Load users error:", error);
+    console.error(error);
     return;
   }
 
-  renderUsers(data);
+  renderUsers(users);
 }
 
 /* =========================
@@ -50,6 +50,7 @@ function renderUsers(users) {
     tableBody.innerHTML += `
       <tr>
         <td>${u.id}</td>
+
         <td>
           <select onchange="changeRole('${u.id}', this.value)">
             <option value="admin" ${u.role === "admin" ? "selected" : ""}>Admin</option>
@@ -59,8 +60,9 @@ function renderUsers(users) {
             <option value="agent" ${u.role === "agent" ? "selected" : ""}>Agent</option>
           </select>
         </td>
+
         <td>
-          <button class="btn danger" onclick="deleteUser('${u.id}')">🗑 Delete</button>
+          <button class="btn danger" onclick="deleteUser('${u.id}')">🗑</button>
         </td>
       </tr>
     `;
@@ -104,13 +106,16 @@ window.addUser = async () => {
       throw new Error(err);
     }
 
-    const data = await res.json(); // ✅ FIX
+    // ✅ IMPORTANT: عرّفنا data هنا
+    const result = await res.json();
+    const newUserId = result.user_id; // Edge Function ترجع هكّا
 
-    await log("CREATE_USER", data.user_id);
+    await log("CREATE_USER", newUserId);
 
     alert("User ajouté avec succès ✅");
     closeModal();
     loadUsers();
+
   } catch (err) {
     console.error(err);
     alert("Erreur lors de l'ajout de l'utilisateur");
