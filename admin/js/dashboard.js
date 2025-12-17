@@ -61,7 +61,7 @@ async function fetchUsers() {
         .from(table)
         .select("*")
         .eq("user_id", p.id)
-        .single();
+        .maybeSingle();
 
       if (!error && data) {
         details = data;
