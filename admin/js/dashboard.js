@@ -16,37 +16,68 @@ const elAgents = document.getElementById("stat-agents");
 const elLastSignup = document.getElementById("stat-last-signup");
 
 /* =========================
-   FILTER STATE
+   STATE
 ========================= */
 let allUsers = [];
 let searchValue = "";
 let filterConfirmed = "all";
 
 /* =========================
-   FETCH USERS
+   ROLE → TABLE MAP
+========================= */
+const ROLE_TABLE = {
+  admin: "admin_details",
+  directeur: "directeur_details",
+  sous_directeur: "sous_directeur_details",
+  supervisor: "supervisor_details",
+  team_leader: "team_leader_details",
+  agent: "agent_details"
+};
+
+/* =========================
+   FETCH USERS (FINAL)
 ========================= */
 async function fetchUsers() {
-  const { data, error } = await supabase
+  // 1️⃣ get profiles (ID + ROLE ONLY)
+  const { data: profiles, error } = await supabase
     .from("profiles")
-    .select(`
-      id,
-      full_name,
-      email,
-      role,
-      department,
-      confirmed,
-      confirmed_at,
-      confirmed_by,
-      created_at
-    `)
+    .select("id, role, confirmed, confirmed_at, confirmed_by, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error(error);
+    console.error("Profiles error:", error);
     return;
   }
 
-  allUsers = data;
+  // 2️⃣ fetch details per user
+  const users = [];
+
+  for (const p of profiles) {
+    const table = ROLE_TABLE[p.role];
+    let details = {};
+
+    if (table) {
+      const { data } = await supabase
+        .from(table)
+        .select("*")
+        .eq("user_id", p.id)
+        .single();
+
+      details = data || {};
+    }
+
+    users.push({
+      id: p.id,
+      role: p.role,
+      confirmed: p.confirmed,
+      confirmed_at: p.confirmed_at,
+      confirmed_by: p.confirmed_by,
+      created_at: p.created_at,
+      ...details
+    });
+  }
+
+  allUsers = users;
   updateStats();
   renderTable();
 }
@@ -67,8 +98,7 @@ function updateStats() {
   elAgents.innerHTML = allUsers.filter(u => u.role === "agent").length;
 
   if (allUsers.length) {
-    elLastSignup.innerHTML = new Date(allUsers[0].created_at)
-      .toLocaleString();
+    elLastSignup.innerHTML = new Date(allUsers[0].created_at).toLocaleString();
   }
 }
 
@@ -97,7 +127,7 @@ function renderTable() {
     tableBody.innerHTML += `
       <tr>
         <td>${u.full_name ?? "-"}</td>
-        <td>${u.email}</td>
+        <td>${u.email ?? "-"}</td>
         <td>${u.role}</td>
         <td>${u.department ?? "-"}</td>
         <td>
@@ -124,17 +154,19 @@ function renderTable() {
 }
 
 /* =========================
-   APPROVE USER (②)
+   APPROVE USER
 ========================= */
 window.approveUser = async function (userId) {
-  const { data: me } = await supabase.auth.getUser();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
 
   const { error } = await supabase
     .from("profiles")
     .update({
       confirmed: true,
       confirmed_at: new Date().toISOString(),
-      confirmed_by: me.user.email
+      confirmed_by: user.id
     })
     .eq("id", userId);
 
@@ -147,7 +179,7 @@ window.approveUser = async function (userId) {
 };
 
 /* =========================
-   FILTERS + SEARCH (③)
+   FILTERS
 ========================= */
 window.searchUsers = function (val) {
   searchValue = val.toLowerCase();
