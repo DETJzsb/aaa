@@ -63,9 +63,12 @@ async function fetchUsers() {
         .eq("user_id", p.id)
         .maybeSingle();
 
-      if (!error && data) {
-        details = data;
-      }
+let details = {};
+
+if (!error && data) {
+  details = data;
+}
+
     }
 
     users.push({
