@@ -1,29 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin – Users</title>
-  <link rel="stylesheet" href="css/ui.css">
+  <link rel="stylesheet" href="css/ui.css" />
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- ================= SIDEBAR ================= -->
 <div class="sidebar">
   <h2 class="logo">ADMIN</h2>
   <a href="index.html">Dashboard</a>
   <a class="active">Users</a>
   <a href="history.html">Historic</a>
-  <a href="#" id="logoutBtn" style="margin-top:30px;color:#ef4444">Logout</a>
+  <a href="#" id="logoutBtn" style="margin-top:30px;color:#ef4444">
+    Logout
+  </a>
 </div>
 
-<!-- MAIN -->
+<!-- ================= MAIN ================= -->
 <div class="main">
+
+  <!-- TOPBAR -->
   <div class="topbar">
     <h1>Users Management</h1>
-    <button class="btn primary" onclick="openAdd()">+ Add User</button>
+    <button class="btn primary" onclick="openAdd()">
+      + Add User
+    </button>
   </div>
 
+  <!-- USERS TABLE -->
   <div class="card">
+
+    <!-- SEARCH -->
+    <input
+      type="text"
+      placeholder="Search by name or email"
+      oninput="searchUsers(this.value)"
+      style="margin-bottom:12px;width:260px"
+    />
+
     <table class="table">
       <thead>
         <tr>
@@ -31,21 +47,24 @@
           <th>Email</th>
           <th>Role</th>
           <th>Department</th>
+          <th>Confirmed</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody id="users-table"></tbody>
+      <tbody id="users-table">
+        <!-- filled by users.js -->
+      </tbody>
     </table>
   </div>
 </div>
 
-<!-- ADD / EDIT USER -->
+<!-- ================= ADD USER MODAL ================= -->
 <div class="modal" id="userModal">
   <div class="modal-card">
     <h3 id="modalTitle">Add User</h3>
 
-    <input id="fullName" placeholder="Full name *">
-    <input id="email" placeholder="Email *">
+    <input id="fullName" placeholder="Full name *" />
+    <input id="email" placeholder="Email *" />
 
     <select id="role" onchange="handleRoleChange()">
       <option value="">Select role *</option>
@@ -56,7 +75,7 @@
       <option value="agent">Agent</option>
     </select>
 
-    <!-- Department (conditional) -->
+    <!-- DEPARTMENT -->
     <select id="department" style="display:none">
       <option value="">Select department *</option>
       <option>ZSB</option>
@@ -67,12 +86,12 @@
 
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn primary" onclick="saveUser()">Save</button>
+      <button class="btn primary" onclick="addUser()">Save</button>
     </div>
   </div>
 </div>
 
-<!-- DELETE -->
+<!-- ================= DELETE MODAL ================= -->
 <div class="modal" id="deleteModal">
   <div class="modal-card">
     <h3>Delete user?</h3>
@@ -85,107 +104,55 @@
   </div>
 </div>
 
+<!-- ================= SCRIPTS ================= -->
 <script type="module" src="js/admin-auth.js"></script>
 <script type="module" src="js/supabase-admin.js"></script>
+<script type="module" src="js/users.js"></script>
 
-<!-- UI LOGIC ONLY -->
+<!-- ================= UI HELPERS ================= -->
 <script>
-  let editIndex = null;
-  let users = [];
+  let deleteUserId = null;
 
-  function openAdd(){
-    editIndex = null;
-    document.getElementById('modalTitle').innerText = 'Add User';
-    document.getElementById('userModal').classList.add('show');
+  function openAdd() {
+    document.getElementById("modalTitle").innerText = "Add User";
+    document.getElementById("userModal").classList.add("show");
   }
 
-  function closeModal(){
-    document.getElementById('userModal').classList.remove('show');
+  function closeModal() {
+    document.getElementById("userModal").classList.remove("show");
   }
 
-  function handleRoleChange(){
-    const role = document.getElementById('role').value;
-    const dep = document.getElementById('department');
+  function handleRoleChange() {
+    const role = document.getElementById("role").value;
+    const dep = document.getElementById("department");
 
-    if(role === 'sous-directeur'){
-      dep.style.display = 'block';
-    }else{
-      dep.style.display = 'none';
-      dep.value = '';
+    if (
+      role === "directeur" ||
+      role === "sous-directeur" ||
+      role === "supervisor" ||
+      role === "agent"
+    ) {
+      dep.style.display = "block";
+    } else {
+      dep.style.display = "none";
+      dep.value = "";
     }
   }
 
-  function saveUser(){
-    const name = fullName.value.trim();
-    const mail = email.value.trim();
-    const role = document.getElementById('role').value;
-    const dep = department.value;
+  function askDelete(id) {
+    deleteUserId = id;
+    document.getElementById("deleteModal").classList.add("show");
+  }
 
-    if(!name || !mail || !role){
-      alert('Fill required fields');
-      return;
+  function closeDelete() {
+    document.getElementById("deleteModal").classList.remove("show");
+  }
+
+  function confirmDelete() {
+    if (deleteUserId) {
+      deleteUser(deleteUserId);
+      closeDelete();
     }
-
-    if(role === 'sous-directeur' && !dep){
-      alert('Department required for Sous Directeur');
-      return;
-    }
-
-    const user = { name, mail, role, dep };
-
-    if(editIndex === null){
-      users.push(user);
-    }else{
-      users[editIndex] = user;
-    }
-
-    renderUsers();
-    closeModal();
-  }
-
-  function renderUsers(){
-    const tbody = document.getElementById('users-table');
-    tbody.innerHTML = '';
-
-    users.forEach((u,i)=>{
-      tbody.innerHTML += `
-        <tr>
-          <td>${u.name}</td>
-          <td>${u.mail}</td>
-          <td>${u.role}</td>
-          <td>${u.dep || '-'}</td>
-          <td class="actions">
-            <button onclick="editUser(${i})">✏️</button>
-            <button class="danger" onclick="deleteUser(${i})">🗑</button>
-          </td>
-        </tr>
-      `;
-    });
-  }
-
-  function editUser(i){
-    editIndex = i;
-    const u = users[i];
-    fullName.value = u.name;
-    email.value = u.mail;
-    role.value = u.role;
-    handleRoleChange();
-    department.value = u.dep || '';
-    openAdd();
-  }
-
-  let deleteIndex = null;
-  function deleteUser(i){
-    deleteIndex = i;
-    deleteModal.classList.add('show');
-  }
-  function closeDelete(){
-    deleteModal.classList.remove('show');
-  }
-  function confirmDelete(){
-    users.splice(deleteIndex,1);
-    renderUsers();
-    closeDelete();
   }
 </script>
 
