@@ -1,15 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>History</title>
-  <link rel="stylesheet" href="css/admin.css">
+  <meta charset="UTF-8" />
+  <title>Admin – Historic</title>
+  <link rel="stylesheet" href="css/ui.css" />
 </head>
 <body>
 
-<h1>Historique</h1>
-<div id="logs"></div>
+<div class="sidebar">
+  <h2 class="logo">ADMIN</h2>
+  <a href="index.html">Dashboard</a>
+  <a href="users.html">Users</a>
+  <a class="active">Historic</a>
+</div>
 
+<div class="main">
+  <div class="topbar">
+    <h1>Activity Logs</h1>
+    <div class="user-chip">Admin</div>
+  </div>
+
+  <div class="card">
+    <ul id="history-list" class="activity-list"></ul>
+  </div>
+</div>
+
+<script type="module" src="js/admin-auth.js"></script>
 <script type="module" src="js/history.js"></script>
 </body>
 </html>
