@@ -1,51 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin Login</title>
+  <link rel="stylesheet" href="css/ui.css" />
+  <style>
+    /* Login only (inline باش ما نكسروش بقية الUI) */
+    .login-wrapper{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .login-card{
+      width:100%;
+      max-width:380px;
+      background:#020617;
+      border:1px solid #1e293b;
+      border-radius:14px;
+      padding:30px;
+    }
+    .login-card h2{
+      margin:0 0 10px;
+    }
+    .login-card p{
+      color:#9ca3af;
+      font-size:14px;
+      margin-bottom:20px;
+    }
+    .login-card input{
+      width:100%;
+      padding:12px;
+      margin-bottom:14px;
+      border-radius:10px;
+      border:1px solid #1e293b;
+      background:#020617;
+      color:#e5e7eb;
+    }
+    .login-card button{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:none;
+      background:#3b82f6;
+      color:white;
+      font-weight:600;
+      cursor:pointer;
+    }
+    .login-card button:hover{
+      opacity:.9;
+    }
+    .login-footer{
+      margin-top:15px;
+      text-align:center;
+      font-size:13px;
+      color:#9ca3af;
+    }
+  </style>
 </head>
 <body>
 
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
+<div class="login-wrapper">
+  <div class="login-card">
+    <h2>Admin Login</h2>
+    <p>Sign in to access dashboard</p>
 
-<script type="module">
-import { supabase } from "./js/supabase-admin.js";
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
 
-window.login = async function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+    <button id="login-btn">Login</button>
 
-  const { data: authData, error: authError } =
-    await supabase.auth.signInWithPassword({ email, password });
+    <div class="login-footer">
+      Logistics App – Admin Panel
+    </div>
+  </div>
+</div>
 
-  if (authError) {
-    alert(authError.message);
-    return;
-  }
-
-  const user = authData.user;
-
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (!profile) {
-    alert("Profile not found");
-    return;
-  }
-
-  if (profile.role !== "admin") {
-    alert("Access denied");
-    return;
-  }
-
-  window.location.href = "/aaa/admin/index.html";
-};
-</script>
-
+<script type="module" src="js/login.js"></script>
 </body>
 </html>
