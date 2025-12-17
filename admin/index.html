@@ -1,47 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="css/ui.css" />
+  <link rel="stylesheet" href="css/ui.css">
 </head>
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
   <h2 class="logo">ADMIN</h2>
   <a class="active">Dashboard</a>
   <a href="users.html">Users</a>
   <a href="history.html">Historic</a>
+  <a href="#" id="logoutBtn" style="margin-top:30px;color:#ef4444">Logout</a>
 </div>
 
+<!-- MAIN -->
 <div class="main">
+
+  <!-- TOP -->
   <div class="topbar">
     <h1>Dashboard</h1>
     <div class="user-chip">Admin</div>
   </div>
 
+  <!-- STATS -->
   <div class="stats">
     <div class="stat-card">
       <span>Total Users</span>
-      <h2 id="total-users">—</h2>
+      <h2 id="stat-total-users">0</h2>
     </div>
+
     <div class="stat-card">
-      <span>Departments</span>
-      <h2 id="total-departments">—</h2>
+      <span>Confirmed Accounts</span>
+      <h2 id="stat-confirmed">0</h2>
     </div>
+
     <div class="stat-card alert">
-      <span>Alerts</span>
-      <h2 id="alerts">—</h2>
+      <span>Unconfirmed Accounts</span>
+      <h2 id="stat-unconfirmed">0</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Admins</span>
+      <h2 id="stat-admins">0</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Agents</span>
+      <h2 id="stat-agents">0</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Last Signup</span>
+      <h2 id="stat-last-signup">—</h2>
     </div>
   </div>
 
+  <!-- USERS TABLE -->
   <div class="card">
-    <h3>Last Activity</h3>
-    <ul id="last-activity" class="activity-list"></ul>
+    <h2>All Users (Supabase View)</h2>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Department</th>
+          <th>Confirmed</th>
+          <th>Confirmed At</th>
+          <th>Confirmed By</th>
+        </tr>
+      </thead>
+
+      <tbody id="dashboard-users-table">
+        <!-- JS inject rows -->
+      </tbody>
+    </table>
   </div>
+
 </div>
 
-<script type="module" src="js/admin-auth.js"></script>
+<!-- LOGOUT -->
+<script type="module">
+  import { supabase } from "./js/supabase-admin.js";
+  document.getElementById("logoutBtn").onclick = async () => {
+    await supabase.auth.signOut();
+    location.href = "login.html";
+  };
+</script>
+
+<!-- DASHBOARD LOGIC -->
 <script type="module" src="js/dashboard.js"></script>
+
 </body>
 </html>
