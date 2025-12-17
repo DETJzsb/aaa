@@ -1,37 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Manage Users</title>
-  <link rel="stylesheet" href="css/admin.css">
+  <meta charset="UTF-8" />
+  <title>Admin – Users</title>
+  <link rel="stylesheet" href="css/ui.css" />
 </head>
 <body>
 
-<h1>Users Management</h1>
+<div class="sidebar">
+  <h2 class="logo">ADMIN</h2>
+  <a href="index.html">Dashboard</a>
+  <a class="active">Users</a>
+  <a href="history.html">Historic</a>
+</div>
 
-<h3>Ajouter User</h3>
-<input id="email" placeholder="Email">
-<input id="password" placeholder="Password">
-<input id="role" placeholder="Role">
-<input id="department" placeholder="Department">
-<input id="part" placeholder="Part">
-<input id="line" placeholder="Line">
-<input id="zone" placeholder="Zone">
-<button onclick="addUser()">Add</button>
+<div class="main">
+  <div class="topbar">
+    <h1>Users</h1>
+    <div class="user-chip">Admin</div>
+  </div>
 
-<hr>
+  <div class="card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Department</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="users-table"></tbody>
+    </table>
+  </div>
+</div>
 
-<h3>Supprimer User</h3>
-<input id="deleteId" placeholder="User ID">
-<button onclick="deleteUser()">Delete</button>
-
-<hr>
-
-<h3>Changer Role</h3>
-<input id="roleId" placeholder="User ID">
-<input id="newRole" placeholder="New Role">
-<button onclick="changeRole()">Change</button>
-
+<script type="module" src="js/admin-auth.js"></script>
 <script type="module" src="js/users.js"></script>
 </body>
 </html>
