@@ -1,9 +1,9 @@
-import { supabaseAdmin } from "./supabase-admin.js";
+import { supabase } from "./supabase-admin.js";
 import { checkAdmin } from "./admin-auth.js";
 
 await checkAdmin();
 
-const { data } = await supabaseAdmin
+const { data } = await supabase
   .from("audit_logs")
   .select("*")
   .order("created_at", { ascending: false });
