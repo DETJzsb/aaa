@@ -96,7 +96,7 @@ window.addUser = async () => {
     }
 
     const res = await fetch(
-      "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/admin-create-user",
+      "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/dynamic-handler",
       {
         method: "POST",
         headers: {
