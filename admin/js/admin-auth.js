@@ -19,6 +19,15 @@ export async function checkAdmin() {
   if (!profile || profile.role !== "admin") {
     location.href = "login.html";
   }
+const { data } = await supabase
+  .from("admin_details")
+  .select("user_id")
+  .eq("user_id", user.id)
+  .single();
+
+if (!data) {
+  window.location.href = "/admin/complete-profile.html";
+}
 
   return userId;
 }
