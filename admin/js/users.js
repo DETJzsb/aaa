@@ -95,19 +95,22 @@ window.addUser = async () => {
       return;
     }
 
-    const res = await fetch(
-      "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/dynamic-handler",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-  apikey: SUPABASE_ANON_KEY,
-  Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+const { data: sessionData } = await supabase.auth.getSession();
 
-        },
-        body: JSON.stringify(payload),
-      }
-    );
+const accessToken = sessionData.session.access_token;
+
+const res = await fetch(
+  "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/dynamic-handler",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`, // ✅ هذا المهم
+    },
+    body: JSON.stringify(payload),
+  }
+);
+
 
     if (!res.ok) {
       const err = await res.json();
