@@ -1,33 +1,44 @@
 import { supabase } from "./supabase-admin.js";
 
 export async function checkAdmin() {
-  const { data: sessionData } = await supabase.auth.getSession();
+  /* =========================
+     GET AUTH USER
+  ========================= */
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
 
-  if (!sessionData.session) {
+  if (authError || !user) {
     location.href = "login.html";
-    return;
+    throw new Error("Not authenticated");
   }
 
-  const userId = sessionData.session.user.id;
-
-  const { data: profile } = await supabase
+  /* =========================
+     GET PROFILE ROLE
+  ========================= */
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("role")
-    .eq("id", userId)
+    .eq("id", user.id)
     .single();
 
-  if (!profile || profile.role !== "admin") {
+  if (profileError || !profile) {
     location.href = "login.html";
+    throw new Error("Profile not found");
   }
-const { data } = await supabase
-  .from("admin_details")
-  .select("user_id")
-  .eq("user_id", user.id)
-  .single();
 
-if (!data) {
-  window.location.href = "/admin/complete-profile.html";
-}
+  /* =========================
+     CHECK ADMIN
+  ========================= */
+  if (profile.role !== "admin") {
+    alert("Access denied");
+    location.href = "login.html";
+    throw new Error("Not admin");
+  }
 
-  return userId;
+  /* =========================
+     RETURN ADMIN ID
+  ========================= */
+  return user.id;
 }
