@@ -3,43 +3,72 @@ import { checkAdmin } from "./admin-auth.js";
 
 await checkAdmin();
 const table = document.getElementById("users-table");
+const fixed = document.getElementById("fixedFields");
 
-/* LOAD USERS */
+/* =========================
+   ROLE FORM LOGIC
+========================= */
+window.handleRole = () => {
+  const role = document.getElementById("role").value;
+  fixed.innerHTML = "";
+
+  if (["sous_directeur","supervisor","team_leader","agent"].includes(role)) {
+    fixed.innerHTML += `<input id="matricule" placeholder="Matricule *">`;
+  }
+
+  if (["sous_directeur","supervisor","team_leader","agent"].includes(role)) {
+    fixed.innerHTML += `
+      <select id="department">
+        <option>ZSB</option>
+        <option>JIS</option>
+        <option>N-JIS</option>
+        <option>R-S</option>
+      </select>`;
+  }
+
+  if (["supervisor","team_leader"].includes(role)) {
+    fixed.innerHTML += `
+      <label><input type="checkbox" value="BASIS"> BASIS</label>
+      <label><input type="checkbox" value="COCPIT"> COCPIT</label>
+      <label><input type="checkbox" value="INR"> INR</label>
+      <label><input type="checkbox" value="THS"> THS</label>
+      <label><input type="checkbox" value="MM"> MM</label>`;
+  }
+
+  if (role === "team_leader") {
+    fixed.innerHTML += `<input id="shift" placeholder="Shift">`;
+  }
+};
+
+/* =========================
+   LOAD USERS
+========================= */
 async function loadUsers() {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("id, role")
-    .order("id");
-
-  if (error) return console.error(error);
-
+  const { data } = await supabase.from("profiles").select("id, role");
   table.innerHTML = "";
   data.forEach(u => {
-    table.innerHTML += `
-      <tr>
-        <td>${u.id}</td>
-        <td>
-          <select onchange="changeRole('${u.id}', this.value)">
-            <option value="admin" ${u.role==="admin"?"selected":""}>admin</option>
-            <option value="directeur" ${u.role==="directeur"?"selected":""}>directeur</option>
-            <option value="sous_directeur" ${u.role==="sous_directeur"?"selected":""}>sous_directeur</option>
-            <option value="supervisor" ${u.role==="supervisor"?"selected":""}>supervisor</option>
-            <option value="team_leader" ${u.role==="team_leader"?"selected":""}>team_leader</option>
-            <option value="agent" ${u.role==="agent"?"selected":""}>agent</option>
-          </select>
-        </td>
-        <td>
-          <button onclick="deleteUser('${u.id}')">🗑</button>
-        </td>
-      </tr>
-    `;
+    table.innerHTML += `<tr><td>${u.id}</td><td>${u.role}</td></tr>`;
   });
 }
 
-/* ADD USER */
+/* =========================
+   ADD USER
+========================= */
 window.addUser = async () => {
-  const email = document.getElementById("email").value;
   const role = document.getElementById("role").value;
+  const email = document.getElementById("email").value;
+
+  const parts = [...document.querySelectorAll("input[type=checkbox]:checked")]
+    .map(c => c.value);
+
+  const payload = {
+    email,
+    role,
+    matricule: matricule?.value,
+    department: department?.value,
+    parts,
+    shift: shift?.value
+  };
 
   const res = await fetch(
     "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/dynamic-handler",
@@ -49,11 +78,7 @@ window.addUser = async () => {
         "Content-Type": "application/json",
         apikey: SUPABASE_ANON_KEY
       },
-      body: JSON.stringify({
-        email,
-        role,
-        full_name: "PENDING"
-      })
+      body: JSON.stringify(payload)
     }
   );
 
@@ -62,18 +87,8 @@ window.addUser = async () => {
     return;
   }
 
-  alert("User created");
+  alert("User added");
   loadUsers();
-};
-
-/* CHANGE ROLE */
-window.changeRole = async (id, role) => {
-  await supabase.from("profiles").update({ role }).eq("id", id);
-};
-
-/* DELETE USER */
-window.deleteUser = async (id) => {
-  alert("Delete via edge function later");
 };
 
 loadUsers();
