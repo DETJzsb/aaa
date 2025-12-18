@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- ========== SIDEBAR ========== -->
 <div class="sidebar">
   <h2 class="logo">ADMIN</h2>
   <a class="active">Dashboard</a>
@@ -16,7 +16,7 @@
   <a href="#" id="logoutBtn" style="margin-top:30px;color:#ef4444">Logout</a>
 </div>
 
-<!-- MAIN -->
+<!-- ========== MAIN ========== -->
 <div class="main">
 
   <!-- TOPBAR -->
@@ -29,98 +29,57 @@
   <div class="stats">
     <div class="stat-card">
       <span>Total Users</span>
-      <h2 id="stat-total-users">0</h2>
-    </div>
-
-    <div class="stat-card">
-      <span>Confirmed Accounts</span>
-      <h2 id="stat-confirmed">0</h2>
-    </div>
-
-    <div class="stat-card alert">
-      <span>Unconfirmed Accounts</span>
-      <h2 id="stat-unconfirmed">0</h2>
+      <h2 id="stat-total">0</h2>
     </div>
 
     <div class="stat-card">
       <span>Admins</span>
-      <h2 id="stat-admins">0</h2>
+      <h2 id="stat-admin">0</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Directeurs</span>
+      <h2 id="stat-directeur">0</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Supervisors</span>
+      <h2 id="stat-supervisor">0</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Team Leaders</span>
+      <h2 id="stat-teamleader">0</h2>
     </div>
 
     <div class="stat-card">
       <span>Agents</span>
-      <h2 id="stat-agents">0</h2>
-    </div>
-
-    <div class="stat-card">
-      <span>Last Signup</span>
-      <h2 id="stat-last-signup">—</h2>
-    </div>
-  </div>
-
-  <!-- FILTERS + SEARCH -->
-  <div class="card" style="margin-bottom:20px">
-    <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <input
-        type="text"
-        placeholder="Search by name or email"
-        oninput="searchUsers(this.value)"
-        style="
-          padding:10px;
-          border-radius:10px;
-          border:1px solid #1e293b;
-          background:#020617;
-          color:#fff;
-          min-width:240px;
-        "
-      >
-
-      <select
-        onchange="filterUsers(this.value)"
-        style="
-          padding:10px;
-          border-radius:10px;
-          border:1px solid #1e293b;
-          background:#020617;
-          color:#fff;
-        "
-      >
-        <option value="all">All users</option>
-        <option value="confirmed">Confirmed only</option>
-        <option value="unconfirmed">Unconfirmed only</option>
-      </select>
+      <h2 id="stat-agent">0</h2>
     </div>
   </div>
 
   <!-- USERS TABLE -->
   <div class="card">
-    <h2>All Users (Supabase View)</h2>
+    <h2>All Users (Profiles)</h2>
 
     <table class="table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Email</th>
+          <th>User ID</th>
           <th>Role</th>
-          <th>Department</th>
-          <th>Confirmed</th>
-          <th>Confirmed At</th>
-          <th>Confirmed By</th>
-          <th>Action</th>
         </tr>
       </thead>
 
-      <tbody id="dashboard-users-table">
-        <!-- JS inject rows -->
-      </tbody>
+      <tbody id="dashboard-users-table"></tbody>
     </table>
   </div>
 
 </div>
 
-<!-- LOGOUT -->
+<!-- ========== LOGOUT ========== -->
 <script type="module">
   import { supabase } from "./js/supabase-admin.js";
+
   document.getElementById("logoutBtn").onclick = async () => {
     await supabase.auth.signOut();
     location.href = "login.html";
