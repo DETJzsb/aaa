@@ -55,9 +55,9 @@ function renderUsers(users) {
           <select onchange="changeRole('${u.id}', this.value)">
             <option value="admin" ${u.role === "admin" ? "selected" : ""}>Admin</option>
             <option value="directeur" ${u.role === "directeur" ? "selected" : ""}>Directeur</option>
-            <option value="sous-directeur" ${u.role === "sous-directeur" ? "selected" : ""}>Sous Directeur</option>
+            <option value="sous-directeur" ${u.role === "sous_directeur" ? "selected" : ""}>Sous Directeur</option>
             <option value="supervisor" ${u.role === "supervisor" ? "selected" : ""}>Supervisor</option>
-            <option value="team-leader" ${u.role === "team-leader" ? "selected" : ""}>Team Leader</option>
+            <option value="team-leader" ${u.role === "team_leader" ? "selected" : ""}>Team Leader</option>
             <option value="agent" ${u.role === "agent" ? "selected" : ""}>Agent</option>
           </select>
         </td>
