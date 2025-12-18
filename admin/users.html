@@ -22,13 +22,14 @@
   <!-- TOPBAR -->
   <div class="topbar">
     <h1>Users Management</h1>
-    <button class="btn primary" onclick="addUser()">+ Add User</button>
+    <!-- ✅ FIXED -->
+    <button class="btn primary" onclick="openAdd()">+ Add User</button>
   </div>
 
   <!-- SEARCH -->
   <div class="card" style="margin-bottom:10px">
-    <input id="searchInput" placeholder="Search by name or email" />
-    <button class="btn ghost" onclick="applySearch()">Search</button>
+    <input id="searchInput" placeholder="Search by ID or Role" />
+    <button class="btn ghost" onclick="loadUsers()">Refresh</button>
   </div>
 
   <!-- TABLE -->
@@ -36,11 +37,8 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Email</th>
+          <th>User ID</th>
           <th>Role</th>
-          <th>Department</th>
-          <th>Confirmed</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -63,19 +61,30 @@
       <option value="directeur">Directeur</option>
       <option value="sous-directeur">Sous Directeur</option>
       <option value="supervisor">Supervisor</option>
+      <option value="team-leader">Team Leader</option>
       <option value="agent">Agent</option>
     </select>
 
+    <input id="matricule" placeholder="Matricule" />
+
     <select id="department" style="display:none">
-      <option value="">Select department *</option>
+      <option value="">Select department</option>
       <option>ZSB</option>
       <option>JIS</option>
       <option>N-JIS</option>
       <option>R-S</option>
     </select>
 
+    <input id="parts" placeholder="Parts (Supervisor / TL)" />
+    <input id="part" placeholder="Part (Agent)" />
+    <input id="shift" placeholder="Shift" />
+    <input id="line" placeholder="Line" />
+    <input id="tel" placeholder="Tel" />
+    <input id="whatsapp" placeholder="Whatsapp" />
+
     <div class="modal-actions">
       <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <!-- ✅ Save = addUser -->
       <button class="btn primary" onclick="addUser()">Save</button>
     </div>
   </div>
@@ -116,23 +125,33 @@
   function openAdd() {
     document.getElementById("userModal").classList.add("show");
   }
+
   function closeModal() {
     document.getElementById("userModal").classList.remove("show");
   }
+
   function handleRoleChange() {
     const role = document.getElementById("role").value;
     const dep = document.getElementById("department");
-    dep.style.display =
-      role === "admin" ? "none" : "block";
+
+    // admin / directeur ما عندهمش department
+    if (role === "admin" || role === "directeur") {
+      dep.style.display = "none";
+      dep.value = "";
+    } else {
+      dep.style.display = "block";
+    }
   }
 
   function askDelete(id) {
     deleteUserId = id;
     deleteModal.classList.add("show");
   }
+
   function closeDelete() {
     deleteModal.classList.remove("show");
   }
+
   function confirmDelete() {
     deleteUser(deleteUserId);
     closeDelete();
