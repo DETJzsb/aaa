@@ -1,181 +1,79 @@
 import { supabase, SUPABASE_ANON_KEY } from "./supabase-admin.js";
 import { checkAdmin } from "./admin-auth.js";
 
-/* =========================
-   AUTH
-========================= */
-const adminId = await checkAdmin();
+await checkAdmin();
+const table = document.getElementById("users-table");
 
-/* =========================
-   ELEMENTS
-========================= */
-const tableBody = document.getElementById("users-table");
-
-/* =========================
-   AUDIT LOG
-========================= */
-async function log(action, targetId = null) {
-  await supabase.from("audit_logs").insert({
-    user_id: adminId,
-    action,
-    target_user: targetId,
-    page: "users.html",
-  });
-}
-
-/* =========================
-   LOAD USERS
-========================= */
+/* LOAD USERS */
 async function loadUsers() {
-  const { data: users, error } = await supabase
+  const { data, error } = await supabase
     .from("profiles")
     .select("id, role")
-    .order("created_at", { ascending: false });
+    .order("id");
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+  if (error) return console.error(error);
 
-  renderUsers(users);
-}
-
-/* =========================
-   RENDER TABLE
-========================= */
-function renderUsers(users) {
-  tableBody.innerHTML = "";
-
-  users.forEach(u => {
-    tableBody.innerHTML += `
+  table.innerHTML = "";
+  data.forEach(u => {
+    table.innerHTML += `
       <tr>
         <td>${u.id}</td>
-
         <td>
           <select onchange="changeRole('${u.id}', this.value)">
-            <option value="admin" ${u.role === "admin" ? "selected" : ""}>Admin</option>
-            <option value="directeur" ${u.role === "directeur" ? "selected" : ""}>Directeur</option>
-            <option value="sous-directeur" ${u.role === "sous_directeur" ? "selected" : ""}>Sous Directeur</option>
-            <option value="supervisor" ${u.role === "supervisor" ? "selected" : ""}>Supervisor</option>
-            <option value="team-leader" ${u.role === "team_leader" ? "selected" : ""}>Team Leader</option>
-            <option value="agent" ${u.role === "agent" ? "selected" : ""}>Agent</option>
+            <option value="admin" ${u.role==="admin"?"selected":""}>admin</option>
+            <option value="directeur" ${u.role==="directeur"?"selected":""}>directeur</option>
+            <option value="sous_directeur" ${u.role==="sous_directeur"?"selected":""}>sous_directeur</option>
+            <option value="supervisor" ${u.role==="supervisor"?"selected":""}>supervisor</option>
+            <option value="team_leader" ${u.role==="team_leader"?"selected":""}>team_leader</option>
+            <option value="agent" ${u.role==="agent"?"selected":""}>agent</option>
           </select>
         </td>
-
         <td>
-          <button class="btn danger" onclick="deleteUser('${u.id}')">🗑</button>
+          <button onclick="deleteUser('${u.id}')">🗑</button>
         </td>
       </tr>
     `;
   });
 }
 
-/* =========================
-   ADD USER (EDGE FUNCTION)
-========================= */
+/* ADD USER */
 window.addUser = async () => {
-  try {
-    const payload = {
-      email: email.value.trim(),
-      role: role.value,
-      full_name: fullName.value.trim(),
-
-      matricule: matricule?.value || null,
-      department: department?.value || null,
-      parts: parts?.value || null,
-      part: part?.value || null,
-      shift: shift?.value || null,
-      line: line?.value || null,
-      tel: tel?.value || null,
-      whatsapp: whatsapp?.value || null,
-    };
-
-    if (!payload.email || !payload.full_name || !payload.role) {
-      alert("Fill required fields");
-      return;
-    }
-
-const { data: sessionData } = await supabase.auth.getSession();
-
-const accessToken = sessionData.session.access_token;
-
-const res = await fetch(
-  "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/dynamic-handler",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`, // ✅ هذا المهم
-    },
-    body: JSON.stringify(payload),
-  }
-);
-
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw err;
-    }
-
-    const result = await res.json(); // ✅ fixed
-    await log("CREATE_USER", result.user_id);
-
-    alert("✅ User ajouté avec succès");
-    closeModal();
-    loadUsers();
-
-  } catch (err) {
-    console.error(err);
-    alert("❌ Error adding user");
-  }
-};
-
-/* =========================
-   CHANGE ROLE
-========================= */
-window.changeRole = async (userId, newRole) => {
-  const { error } = await supabase
-    .from("profiles")
-    .update({ role: newRole })
-    .eq("id", userId);
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  await log("CHANGE_ROLE", userId);
-};
-
-/* =========================
-   DELETE USER (EDGE FUNCTION)
-========================= */
-window.deleteUser = async (userId) => {
-  if (!confirm("Delete this user?")) return;
+  const email = document.getElementById("email").value;
+  const role = document.getElementById("role").value;
 
   const res = await fetch(
-    "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/admin-delete-user",
+    "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/dynamic-handler",
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        apikey: SUPABASE_ANON_KEY
       },
-      body: JSON.stringify({ user_id: userId }),
+      body: JSON.stringify({
+        email,
+        role,
+        full_name: "PENDING"
+      })
     }
   );
 
   if (!res.ok) {
-    alert("Delete failed");
+    alert("Error creating user");
     return;
   }
 
-  await log("DELETE_USER", userId);
+  alert("User created");
   loadUsers();
 };
 
-/* =========================
-   INIT
-========================= */
+/* CHANGE ROLE */
+window.changeRole = async (id, role) => {
+  await supabase.from("profiles").update({ role }).eq("id", id);
+};
+
+/* DELETE USER */
+window.deleteUser = async (id) => {
+  alert("Delete via edge function later");
+};
+
 loadUsers();
