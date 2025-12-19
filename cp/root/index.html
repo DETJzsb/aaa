@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Root CP</title>
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+
+<header>Root Control Panel</header>
+
+<section class="card">
+  <h3>Add User</h3>
+  <input id="nom" placeholder="Nom">
+  <input id="email" placeholder="Email">
+  <select id="role">
+    <option value="directeur">Directeur</option>
+    <option value="sous_directeur">Sous Directeur</option>
+    <option value="supervisor">Supervisor</option>
+    <option value="team_leader">Team Leader</option>
+    <option value="agent">Agent</option>
+  </select>
+  <input id="department" placeholder="Department">
+  <input id="part" placeholder="Part">
+  <input id="shift" placeholder="Shift">
+  <input id="ligne" placeholder="Ligne">
+
+  <button onclick="addUser()">Add</button>
+</section>
+
+<section class="card">
+  <h3>Users</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th><th>Email</th><th>Role</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="users"></tbody>
+  </table>
+</section>
+
+<script type="module" src="js/adduser.js"></script>
+<script type="module" src="js/suppuser.js"></script>
+<script type="module" src="js/updateuser.js"></script>
+<script type="module" src="js/resetpw.js"></script>
+
+</body>
+</html>
