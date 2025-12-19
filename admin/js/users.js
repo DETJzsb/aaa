@@ -64,11 +64,21 @@ window.addUser = async () => {
   const payload = {
     email,
     role,
-    matricule: matricule?.value,
-    department: department?.value,
-    parts,
-    shift: shift?.value
+    matricule: matricule?.value || null,
+    department: department?.value || null,
+    parts: parts.length ? parts : null,
+    shift: shift?.value || null
   };
+
+  // ✅ جيب session متاع الadmin
+  const {
+    data: { session }
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    alert("Session expired, please login again");
+    return;
+  }
 
   const res = await fetch(
     "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/dynamic-handler",
@@ -76,19 +86,22 @@ window.addUser = async () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        apikey: SUPABASE_ANON_KEY
+        Authorization: `Bearer ${session.access_token}`,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     }
   );
 
   if (!res.ok) {
+    const err = await res.json();
+    console.error(err);
     alert("Error creating user");
     return;
   }
 
-  alert("User added");
+  alert("✅ User added");
   loadUsers();
 };
+
 
 loadUsers();
