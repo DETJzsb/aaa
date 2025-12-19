@@ -22,21 +22,32 @@
   </div>
 
   <div class="card">
-    <ul id="history-list" class="activity-list"></ul>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Action</th>
+          <th>Page</th>
+          <th>Time</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody id="history-table"></tbody>
+    </table>
   </div>
 </div>
 
 <script type="module" src="js/admin-auth.js"></script>
 <script type="module" src="js/history.js"></script>
+
 <script type="module">
-  import { supabase } from './js/supabase-admin.js';
+  import { supabase } from "./js/supabase-admin.js";
 
-  document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+  document.getElementById("logoutBtn").onclick = async () => {
     await supabase.auth.signOut();
-    location.href = 'login.html';
-  });
+    location.href = "login.html";
+  };
 </script>
-
 
 </body>
 </html>
