@@ -75,7 +75,7 @@ window.addUser = async () => {
 
       matricule: matricule?.value || null,
       department: department?.value || null,
-      parts: [...document.querySelectorAll("input[type=checkbox]:checked")].map(c => c.value),
+      parts: parts?.value || null,
       shift: shift?.value || null,
     };
 
