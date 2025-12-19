@@ -55,56 +55,66 @@ async function loadUsers() {
    ADD USER
 ========================= */
 window.addUser = async () => {
-  const full_name = document.getElementById("full_name").value;
-  const role = document.getElementById("role").value;
-  const email = document.getElementById("email").value;
+  try {
+    // 1️⃣ جيب session
+    const {
+      data: { session },
+      error: sessionError
+    } = await supabase.auth.getSession();
 
-  const parts = [...document.querySelectorAll("input[type=checkbox]:checked")]
-    .map(c => c.value);
-
-  const payload = {
-    full_name,
-    email,
-    role,
-     
-    matricule: matricule?.value || null,
-    department: department?.value || null,
-    parts: parts.length ? parts : null,
-    shift: shift?.value || null
-  };
-
-  // ✅ جيب session متاع الadmin
-  const {
-    data: { session }
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    alert("Session expired, please login again");
-    return;
-  }
-
-  const res = await fetch(
-    "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/dynamic-handler",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.access_token}`,
-      },
-      body: JSON.stringify(payload),
+    if (sessionError || !session) {
+      alert("Session expired, please login again");
+      return;
     }
-  );
 
-  if (!res.ok) {
-    const err = await res.json();
+    // 2️⃣ حضّر payload
+    const payload = {
+      email: email.value.trim(),
+      role: role.value,
+      full_name: full_name.value.trim(),
+
+      matricule: matricule?.value || null,
+      department: department?.value || null,
+      parts: [...document.querySelectorAll("input[type=checkbox]:checked")].map(c => c.value),
+      shift: shift?.value || null,
+    };
+
+    if (!payload.email || !payload.role || !payload.full_name) {
+      alert("Missing required fields");
+      return;
+    }
+
+    console.log("PAYLOAD", payload);
+    console.log("JWT", session.access_token);
+
+    // 3️⃣ Call Edge Function
+    const res = await fetch(
+      "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/dynamic-handler",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error(data);
+      alert(data.error || "Error creating user");
+      return;
+    }
+
+    alert("✅ User created");
+    loadUsers();
+
+  } catch (err) {
     console.error(err);
-    alert("Error creating user");
-    return;
+    alert("Unexpected error");
   }
-
-  alert("✅ User added");
-  loadUsers();
 };
-
 
 loadUsers();
