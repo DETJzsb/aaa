@@ -55,6 +55,7 @@ async function loadUsers() {
    ADD USER
 ========================= */
 window.addUser = async () => {
+  const full_name = document.getElementById("full_name").value;
   const role = document.getElementById("role").value;
   const email = document.getElementById("email").value;
 
@@ -62,8 +63,10 @@ window.addUser = async () => {
     .map(c => c.value);
 
   const payload = {
+    full_name,
     email,
     role,
+     
     matricule: matricule?.value || null,
     department: department?.value || null,
     parts: parts.length ? parts : null,
