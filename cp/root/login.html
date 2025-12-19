@@ -17,6 +17,14 @@
 </div>
 
 <script type="module">
+  const {
+  data: { session }
+} = await supabase.auth.getSession()
+
+if (session) {
+  window.location.href = "index.html"
+}
+
   import { supabase } from "./js/supabase.js"
 
   async function login() {
