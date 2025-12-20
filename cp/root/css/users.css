@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  font-family: system-ui;
+  background: #f4f6f8;
+}
+
+.topbar {
+  background: #111;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+main {
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+input, select, button {
+  width: 100%;
+  margin: 6px 0;
+  padding: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+button {
+  cursor: pointer;
+}
