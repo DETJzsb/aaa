@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>ROOT Dashboard</title>
+
+  <link rel="stylesheet" href="./css/base.css">
   <link rel="stylesheet" href="./css/index.css">
 </head>
 
 <body>
 
-<!-- Protect -->
+<!-- حماية الصفحة -->
 <script type="module" src="./js/redirect.js"></script>
 
 <!-- Header -->
-<header class="header">
+<header class="header glass fade-up">
   <div class="profile">
     <div class="avatar" id="avatar">R</div>
     <div class="profile-info">
@@ -21,36 +23,42 @@
     </div>
   </div>
 
-  <button class="btn btn-section">➕ Add Section</button>
+  <button class="btn btn-secondary" onclick="logout()">Logout</button>
 </header>
 
 <!-- Main -->
 <main class="main">
 
   <!-- Stats -->
-  <div class="cards">
-    <div class="card">
+  <section class="cards">
+    <div class="card glass fade-up">
       <h3>Total Users</h3>
-      <p id="totalUsers">–</p>
+      <p id="totalUsers">0</p>
     </div>
-    <div class="card">
+
+    <div class="card glass fade-up" style="animation-delay:.1s">
       <h3>Departments</h3>
-      <p id="totalDepartments">–</p>
+      <p id="totalDepartments">0</p>
     </div>
-    <div class="card">
+
+    <div class="card glass fade-up" style="animation-delay:.2s">
       <h3>Supervisors</h3>
-      <p id="totalSupervisors">–</p>
+      <p id="totalSupervisors">0</p>
     </div>
-  </div>
+  </section>
 
   <!-- Actions -->
-  <div class="actions">
-    <button class="btn btn-users" onclick="goUsers()">👥 Manage Users</button>
-    <button class="btn btn-section" onclick="logout()">🚪 Logout</button>
-  </div>
+  <section class="actions fade-up" style="animation-delay:.35s">
+    <button class="btn btn-primary" onclick="goUsers()">
+      👥 Manage Users
+    </button>
+  </section>
 
 </main>
 
+<!-- Systems -->
 <script type="module" src="./js/index.js"></script>
+<script type="module" src="./js/toast.js"></script>
+
 </body>
 </html>
