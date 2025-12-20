@@ -1,7 +1,6 @@
 import { supabase } from "./supabase.js"
 
-async function checkRootAccess() {
-  // 1️⃣ Check session
+async function protectPage() {
   const {
     data: { session }
   } = await supabase.auth.getSession()
@@ -11,7 +10,6 @@ async function checkRootAccess() {
     return
   }
 
-  // 2️⃣ Check if user is root
   const { data, error } = await supabase
     .from("root")
     .select("id")
@@ -19,10 +17,10 @@ async function checkRootAccess() {
     .single()
 
   if (error || !data) {
-    alert("Access denied")
     await supabase.auth.signOut()
+    alert("Access denied")
     window.location.href = "login.html"
   }
 }
 
-checkRootAccess()
+protectPage()
