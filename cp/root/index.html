@@ -1,55 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Root CP</title>
+  <meta charset="UTF-8">
+  <title>ROOT Dashboard</title>
   <link rel="stylesheet" href="./css/index.css">
 </head>
+
 <body>
 
+<!-- Protect -->
 <script type="module" src="./js/redirect.js"></script>
 
-<header>
-  <h2>Root Control Panel</h2>
-  <div>
-    <a href="profile.html">Profile</a>
-    <button onclick="logout()">Logout</button>
+<!-- Header -->
+<header class="header">
+  <div class="profile">
+    <div class="avatar" id="avatar">R</div>
+    <div class="profile-info">
+      <strong id="rootName">ROOT</strong><br>
+      <span id="rootEmail">root@system.local</span>
+    </div>
   </div>
+
+  <button class="btn btn-section">➕ Add Section</button>
 </header>
 
-<main>
-  <section class="card">
-    <h3>Add User</h3>
+<!-- Main -->
+<main class="main">
 
-    <input id="nom" placeholder="Name">
-    <input id="email" placeholder="Email">
-    <select id="role">
-      <option value="admin">admin</option>
-      <option value="directeur">directeur</option>
-      <option value="sous_directeur">sous_directeur</option>
-      <option value="supervisor">supervisor</option>
-      <option value="team_leader">team_leader</option>
-      <option value="agent">agent</option>
-    </select>
+  <!-- Stats -->
+  <div class="cards">
+    <div class="card">
+      <h3>Total Users</h3>
+      <p id="totalUsers">–</p>
+    </div>
+    <div class="card">
+      <h3>Departments</h3>
+      <p id="totalDepartments">–</p>
+    </div>
+    <div class="card">
+      <h3>Supervisors</h3>
+      <p id="totalSupervisors">–</p>
+    </div>
+  </div>
 
-    <button onclick="addUser()">Add</button>
-  </section>
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn btn-users" onclick="goUsers()">👥 Manage Users</button>
+    <button class="btn btn-section" onclick="logout()">🚪 Logout</button>
+  </div>
 
-  <section class="card">
-    <h3>Users</h3>
-    <table id="users"></table>
-  </section>
 </main>
 
 <script type="module" src="./js/index.js"></script>
-<script type="module" src="./js/adduser.js"></script>
-
-<script type="module">
-import { supabase } from "./js/supabase.js"
-window.logout = async () => {
-  await supabase.auth.signOut()
-  window.location.replace("login.html")
-}
-</script>
-
 </body>
 </html>
