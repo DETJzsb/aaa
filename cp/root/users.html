@@ -3,51 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <title>Users Management</title>
+
+  <link rel="stylesheet" href="./css/base.css">
   <link rel="stylesheet" href="./css/users.css">
 </head>
+
 <body>
 
 <!-- حماية الصفحة -->
 <script type="module" src="./js/redirect.js"></script>
 
-<header class="topbar">
-  <h2>Users</h2>
-  <button onclick="goBack()">⬅ Go Back</button>
+<!-- Header -->
+<header class="header glass fade-up">
+  <h2>Users Management</h2>
+
+  <div class="header-actions">
+    <button class="btn btn-secondary" onclick="goBack()">⬅ Back</button>
+    <button class="btn btn-primary" onclick="openAddUser()">➕ Add User</button>
+  </div>
 </header>
 
-<main>
-  <section class="card">
-    <h3>Add User</h3>
+<!-- Main -->
+<main class="main">
 
-    <input id="nom" placeholder="Name">
-    <input id="email" placeholder="Email">
+  <!-- Search -->
+  <div class="search-box fade-up">
+    <input
+      type="text"
+      id="search"
+      placeholder="Search users..."
+      oninput="filterUsers()"
+    >
+  </div>
 
-    <select id="role">
-      <option value="directeur">Directeur</option>
-      <option value="sous_directeur">Sous Directeur</option>
-      <option value="supervisor">Supervisor</option>
-      <option value="team_leader">Team Leader</option>
-      <option value="agent">Agent</option>
-    </select>
+  <!-- Users Table -->
+  <section class="card glass fade-up" style="animation-delay:.15s">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Department</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
 
-    <input id="department" placeholder="Department">
-    <input id="part" placeholder="Part">
-    <input id="shift" placeholder="Shift">
-    <input id="ligne" placeholder="Ligne">
-
-    <button onclick="addUser()">Add User</button>
+      <tbody id="users">
+        <!-- rows injected by JS -->
+      </tbody>
+    </table>
   </section>
 
-  <section class="card">
-    <h3>Users List</h3>
-    <table id="users"></table>
-  </section>
 </main>
 
+<!-- Modal -->
+<div id="modal-root"></div>
+
+<!-- Systems -->
 <script type="module" src="./js/users.js"></script>
+<script type="module" src="./js/loadusers.js"></script>
 <script type="module" src="./js/adduser.js"></script>
 <script type="module" src="./js/suppuser.js"></script>
 <script type="module" src="./js/resetpw.js"></script>
+<script type="module" src="./js/modal.js"></script>
+<script type="module" src="./js/toast.js"></script>
 
 </body>
 </html>
