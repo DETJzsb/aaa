@@ -1,245 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Users Management</title>
-
-<style>
-:root{
-  --bg:#f8fafc;--card:#fff;--primary:#2563eb;
-  --muted:#64748b;--danger:#ef4444;--radius:14px
-}
-*{box-sizing:border-box;font-family:Inter,system-ui}
-body{margin:0;background:var(--bg);color:#0f172a}
-
-/* Anim */
-@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}
-to{opacity:1;transform:translateY(0)}}
-
-/* Header */
-.header{
-  padding:24px 30px;
-  background:var(--card);
-  box-shadow:0 6px 20px rgba(0,0,0,.05);
-}
-.header h1{margin:0}
-.header span{color:var(--muted);font-size:14px}
-
-/* Search + Filters */
-.filters{
-  margin:25px 30px;
-  background:var(--card);
-  padding:20px;
-  border-radius:var(--radius);
-  box-shadow:0 10px 25px rgba(0,0,0,.04);
-  animation:fadeUp .5s ease
-}
-
-.filters-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:15px;
-  margin-top:15px;
-}
-
-.filters input,
-.filters select{
-  width:100%;
-  padding:10px 12px;
-  border-radius:10px;
-  border:1px solid #e5e7eb;
-  font-size:14px;
-}
-
-.global-search{
-  width:100%;
-  padding:12px 14px;
-  border-radius:10px;
-  border:1px solid #e5e7eb;
-  font-size:14px;
-}
-
-/* Table */
-.table-card{
-  margin:0 30px 30px;
-  background:var(--card);
-  border-radius:var(--radius);
-  box-shadow:0 10px 25px rgba(0,0,0,.04);
-  overflow:hidden;
-  animation:fadeUp .6s ease
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:14px
-}
-th{
-  background:#f1f5f9;
-  text-align:left;
-  padding:14px;
-  color:var(--muted);
-}
-td{
-  padding:14px;
-  border-top:1px solid #e5e7eb;
-}
-
-.actions button{
-  border:none;
-  background:none;
-  cursor:pointer;
-  font-size:13px;
-  margin-right:8px;
-}
-.actions .del{color:var(--danger)}
-.actions .edit{color:var(--primary)}
-</style>
+  <meta charset="UTF-8">
+  <title>Users Management</title>
+  <link rel="stylesheet" href="./css/users.css">
 </head>
-
 <body>
 
-<!-- Header -->
-<div class="header">
-  <h1>Users</h1>
-  <span>Advanced filters & smart search</span>
-</div>
+<!-- حماية الصفحة -->
+<script type="module" src="./js/redirect.js"></script>
 
-<!-- Filters -->
-<div class="filters">
+<header class="topbar">
+  <h2>Users</h2>
+  <button onclick="goBack()">⬅ Go Back</button>
+</header>
 
-  <!-- Global Search -->
-  <input id="globalSearch" class="global-search"
-    placeholder="🔍 Search everywhere (name, email, role, department, part, shift...)">
+<main>
+  <section class="card">
+    <h3>Add User</h3>
 
-  <!-- Column Filters -->
-  <div class="filters-grid">
-    <input id="fNom" placeholder="Filter by name">
-    <input id="fEmail" placeholder="Filter by email">
+    <input id="nom" placeholder="Name">
+    <input id="email" placeholder="Email">
 
-    <select id="fRole">
-      <option value="">All Roles</option>
-      <option>Directeur</option>
-      <option>Sous Directeur</option>
-      <option>Supervisor</option>
-      <option>Agent</option>
+    <select id="role">
+      <option value="directeur">Directeur</option>
+      <option value="sous_directeur">Sous Directeur</option>
+      <option value="supervisor">Supervisor</option>
+      <option value="team_leader">Team Leader</option>
+      <option value="agent">Agent</option>
     </select>
 
-    <select id="fDept">
-      <option value="">All Departments</option>
-      <option>ZSB</option>
-      <option>R-S</option>
-      <option>JIS</option>
-      <option>N-JIS</option>
-    </select>
+    <input id="department" placeholder="Department">
+    <input id="part" placeholder="Part">
+    <input id="shift" placeholder="Shift">
+    <input id="ligne" placeholder="Ligne">
 
-    <select id="fPart">
-      <option value="">All Parts</option>
-      <option>INR</option>
-      <option>COCPIT</option>
-      <option>BASIS</option>
-      <option>THS</option>
-      <option>MM</option>
-      <option>LAGER60</option>
-      <option>LAGER45</option>
-      <option>LAGER05</option>
-    </select>
+    <button onclick="addUser()">Add User</button>
+  </section>
 
-    <select id="fShift">
-      <option value="">All Shifts</option>
-      <option>Morning</option>
-      <option>Evening</option>
-      <option>Night</option>
-    </select>
-  </div>
-</div>
+  <section class="card">
+    <h3>Users List</h3>
+    <table id="users"></table>
+  </section>
+</main>
 
-<!-- Table -->
-<div class="table-card">
-  <table>
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Department</th>
-        <th>Part</th>
-        <th>Shift</th>
-        <th>Tel</th>
-        <th>Whatsapp</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="tbody"></tbody>
-  </table>
-</div>
-
-<script>
-/* ===== Fake Data ===== */
-const users=[
- {nom:"Ahmed",email:"ahmed@mail.com",role:"Supervisor",dept:"ZSB",part:"INR",shift:"Morning",tel:"22123456",wa:"22123456"},
- {nom:"Sami",email:"sami@mail.com",role:"Agent",dept:"R-S",part:"LAGER60",shift:"Night",tel:"99111222",wa:"99111222"},
- {nom:"Ali",email:"ali@mail.com",role:"Directeur",dept:"-",part:"-",shift:"-",tel:"55123456",wa:"55123456"},
- {nom:"Nour",email:"nour@mail.com",role:"Supervisor",dept:"ZSB",part:"MM",shift:"Evening",tel:"44123456",wa:"44123456"}
-]
-
-const tbody=document.getElementById("tbody")
-
-function render(data){
-  tbody.innerHTML=""
-  data.forEach(u=>{
-    tbody.innerHTML+=`
-    <tr>
-      <td>${u.nom}</td>
-      <td>${u.email}</td>
-      <td>${u.role}</td>
-      <td>${u.dept}</td>
-      <td>${u.part}</td>
-      <td>${u.shift}</td>
-      <td>${u.tel}</td>
-      <td>${u.wa}</td>
-      <td class="actions">
-        <button class="edit">Edit</button>
-        <button>Reset PW</button>
-        <button class="del">Delete</button>
-      </td>
-    </tr>`
-  })
-}
-render(users)
-
-/* ===== Filters Logic ===== */
-function applyFilters(){
-  const g = globalSearch.value.toLowerCase()
-  const fn = fNom.value.toLowerCase()
-  const fe = fEmail.value.toLowerCase()
-  const fr = fRole.value
-  const fd = fDept.value
-  const fp = fPart.value
-  const fs = fShift.value
-
-  const filtered = users.filter(u=>{
-    return (
-      Object.values(u).join(" ").toLowerCase().includes(g) &&
-      u.nom.toLowerCase().includes(fn) &&
-      u.email.toLowerCase().includes(fe) &&
-      (fr==="" || u.role===fr) &&
-      (fd==="" || u.dept===fd) &&
-      (fp==="" || u.part===fp) &&
-      (fs==="" || u.shift===fs)
-    )
-  })
-
-  render(filtered)
-}
-
-document.querySelectorAll(
-  "#globalSearch,#fNom,#fEmail,#fRole,#fDept,#fPart,#fShift"
-).forEach(el=>{
-  el.addEventListener("input",applyFilters)
-  el.addEventListener("change",applyFilters)
-})
-</script>
+<script type="module" src="./js/users.js"></script>
+<script type="module" src="./js/adduser.js"></script>
+<script type="module" src="./js/suppuser.js"></script>
+<script type="module" src="./js/resetpw.js"></script>
 
 </body>
 </html>
