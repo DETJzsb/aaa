@@ -1,12 +1,28 @@
-import { supabase } from "./supabase.js"
+import { getJwt } from "./supabase.js"
+import { loadUsers } from "./loadusers.js"
 
 window.deleteUser = async (id) => {
-  if (!confirm("Delete user?")) return
+  if (!confirm("Delete this user?")) return
 
-  const { error } = await supabase.functions.invoke("delete-user", {
-    body: { userId: id }
-  })
+  const token = await getJwt()
 
-  if (error) alert(error.message)
-  else location.reload()
+  const res = await fetch(
+    "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/delete-user",
+    {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ userId: id })
+    }
+  )
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    alert(data.error)
+  } else {
+    loadUsers()
+  }
 }
