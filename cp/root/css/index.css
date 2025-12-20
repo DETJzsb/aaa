@@ -1,4 +1,120 @@
-body { font-family:system-ui; background:#f4f6f8; margin:0 }
-header { background:#111; color:#fff; padding:15px; display:flex; justify-content:space-between }
-.card { background:#fff; margin:20px; padding:20px; border-radius:12px }
-table { width:100% }
+:root{
+  --bg:#f8fafc;
+  --card:#fff;
+  --primary:#2563eb;
+  --muted:#64748b;
+  --radius:16px
+}
+
+*{
+  box-sizing:border-box;
+  font-family:Inter,system-ui
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:#0f172a
+}
+
+/* Anim */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(15px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Header */
+.header{
+  padding:24px 30px;
+  background:var(--card);
+  box-shadow:0 6px 20px rgba(0,0,0,.05);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.profile{
+  display:flex;
+  gap:15px;
+  align-items:center;
+}
+
+.avatar{
+  width:46px;height:46px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#2563eb,#60a5fa);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-weight:700;
+}
+
+.profile-info span{
+  font-size:13px;
+  color:var(--muted)
+}
+
+/* Main */
+.main{
+  padding:30px
+}
+
+/* Cards */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+  animation:fadeUp .5s ease
+}
+
+.card{
+  background:var(--card);
+  padding:22px;
+  border-radius:var(--radius);
+  box-shadow:0 10px 25px rgba(0,0,0,.04);
+}
+
+.card h3{
+  margin:0;
+  font-size:15px;
+  color:var(--muted)
+}
+
+.card p{
+  margin:10px 0 0;
+  font-size:28px;
+  font-weight:700
+}
+
+/* Actions */
+.actions{
+  margin-top:40px;
+  display:flex;
+  gap:20px;
+  animation:fadeUp .7s ease
+}
+
+.btn{
+  padding:16px 24px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:600;
+  transition:.25s;
+}
+
+.btn-users{
+  background:var(--primary);
+  color:#fff;
+}
+
+.btn-users:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 30px rgba(37,99,235,.35)
+}
+
+.btn-section{
+  background:#e5e7eb;
+}
