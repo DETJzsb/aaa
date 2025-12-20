@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Users Management</title>
+
+<style>
+:root{
+  --bg:#f8fafc;--card:#fff;--primary:#2563eb;
+  --muted:#64748b;--danger:#ef4444;--radius:14px
+}
+*{box-sizing:border-box;font-family:Inter,system-ui}
+body{margin:0;background:var(--bg);color:#0f172a}
+
+/* Anim */
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}
+to{opacity:1;transform:translateY(0)}}
+
+/* Header */
+.header{
+  padding:24px 30px;
+  background:var(--card);
+  box-shadow:0 6px 20px rgba(0,0,0,.05);
+}
+.header h1{margin:0}
+.header span{color:var(--muted);font-size:14px}
+
+/* Search */
+.search-box{
+  margin:25px 30px;
+  background:var(--card);
+  padding:20px;
+  border-radius:var(--radius);
+  box-shadow:0 10px 25px rgba(0,0,0,.04);
+  animation:fadeUp .5s ease
+}
+.search-box input{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  font-size:14px;
+}
+
+/* Table */
+.table-card{
+  margin:0 30px 30px;
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:0 10px 25px rgba(0,0,0,.04);
+  overflow:hidden;
+  animation:fadeUp .6s ease
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px
+}
+th{
+  background:#f1f5f9;
+  text-align:left;
+  padding:14px;
+  color:var(--muted);
+}
+td{
+  padding:14px;
+  border-top:1px solid #e5e7eb;
+}
+.actions button{
+  border:none;
+  background:none;
+  cursor:pointer;
+  font-size:13px;
+  margin-right:8px;
+}
+.actions .del{color:var(--danger)}
+.actions .edit{color:var(--primary)}
+</style>
+</head>
+
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>Users</h1>
+  <span>Search & manage all system users</span>
+</div>
+
+<!-- Search -->
+<div class="search-box">
+  <input id="search" placeholder="🔍 Search by name, email, role, department, part, shift...">
+</div>
+
+<!-- Table -->
+<div class="table-card">
+  <table id="usersTable">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Department</th>
+        <th>Part</th>
+        <th>Shift</th>
+        <th>Tel</th>
+        <th>Whatsapp</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script>
+/* ===== Fake data (later Supabase) ===== */
+const users = [
+  {
+    nom:"Ahmed",email:"ahmed@mail.com",role:"Supervisor",
+    dept:"ZSB",part:"INR",shift:"Morning",
+    tel:"22123456",wa:"22123456"
+  },
+  {
+    nom:"Sami",email:"sami@mail.com",role:"Agent",
+    dept:"R-S",part:"LAGER60",shift:"Night",
+    tel:"99111222",wa:"99111222"
+  },
+  {
+    nom:"Ali",email:"ali@mail.com",role:"Directeur",
+    dept:"-",part:"-",shift:"-",
+    tel:"55123456",wa:"55123456"
+  }
+]
+
+const tbody = document.querySelector("#usersTable tbody")
+
+function render(data){
+  tbody.innerHTML=""
+  data.forEach(u=>{
+    tbody.innerHTML+=`
+      <tr>
+        <td>${u.nom}</td>
+        <td>${u.email}</td>
+        <td>${u.role}</td>
+        <td>${u.dept}</td>
+        <td>${u.part}</td>
+        <td>${u.shift}</td>
+        <td>${u.tel}</td>
+        <td>${u.wa}</td>
+        <td class="actions">
+          <button class="edit">Edit</button>
+          <button>Reset PW</button>
+          <button class="del">Delete</button>
+        </td>
+      </tr>`
+  })
+}
+render(users)
+
+/* ===== Smart Search ===== */
+search.addEventListener("input",()=>{
+  const q = search.value.toLowerCase()
+  const filtered = users.filter(u =>
+    Object.values(u).join(" ").toLowerCase().includes(q)
+  )
+  render(filtered)
+})
+</script>
+
+</body>
+</html>
