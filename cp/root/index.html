@@ -2,49 +2,54 @@
 <html>
 <head>
   <title>Root CP</title>
-  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="./css/index.css">
 </head>
 <body>
 
-<header>Root Control Panel</header>
+<script type="module" src="./js/redirect.js"></script>
 
-<section class="card">
-  <h3>Add User</h3>
-  <input id="nom" placeholder="Nom">
-  <input id="email" placeholder="Email">
-  <select id="role">
-    <option value="directeur">Directeur</option>
-    <option value="sous_directeur">Sous Directeur</option>
-    <option value="supervisor">Supervisor</option>
-    <option value="team_leader">Team Leader</option>
-    <option value="agent">Agent</option>
-  </select>
-  <input id="department" placeholder="Department">
-  <input id="part" placeholder="Part">
-  <input id="shift" placeholder="Shift">
-  <input id="ligne" placeholder="Ligne">
+<header>
+  <h2>Root Control Panel</h2>
+  <div>
+    <a href="profile.html">Profile</a>
+    <button onclick="logout()">Logout</button>
+  </div>
+</header>
 
-  <button onclick="addUser()">Add</button>
-</section>
+<main>
+  <section class="card">
+    <h3>Add User</h3>
 
-<section class="card">
-  <h3>Users</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Nom</th><th>Email</th><th>Role</th><th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="users"></tbody>
-  </table>
-</section>
-<script type="module" src="js/redirect.js"></script>
-<script type="module" src="js/loadusers.js"></script>
-<script type="module" src="js/adduser.js"></script>
-<script type="module" src="js/suppuser.js"></script>
-<script type="module" src="js/updateuser.js"></script>
-<script type="module" src="js/resetpw.js"></script>
+    <input id="nom" placeholder="Name">
+    <input id="email" placeholder="Email">
+    <select id="role">
+      <option value="admin">admin</option>
+      <option value="directeur">directeur</option>
+      <option value="sous_directeur">sous_directeur</option>
+      <option value="supervisor">supervisor</option>
+      <option value="team_leader">team_leader</option>
+      <option value="agent">agent</option>
+    </select>
 
+    <button onclick="addUser()">Add</button>
+  </section>
+
+  <section class="card">
+    <h3>Users</h3>
+    <table id="users"></table>
+  </section>
+</main>
+
+<script type="module" src="./js/index.js"></script>
+<script type="module" src="./js/adduser.js"></script>
+
+<script type="module">
+import { supabase } from "./js/supabase.js"
+window.logout = async () => {
+  await supabase.auth.signOut()
+  window.location.replace("login.html")
+}
+</script>
 
 </body>
 </html>
