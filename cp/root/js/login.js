@@ -1,15 +1,27 @@
 import { supabase } from "./supabase.js"
+import { toast } from "./toast.js"
 
 window.login = async () => {
   const email = document.getElementById("email").value
   const password = document.getElementById("password").value
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-  if (error) {
-    document.getElementById("error").textContent = error.message
+  if (!email || !password) {
+    toast("Fill all fields","error")
     return
   }
 
-  window.location.replace("index.html")
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
+
+  if (error) {
+    toast("Invalid credentials","error")
+    return
+  }
+
+  toast("Welcome back","success")
+  setTimeout(()=>{
+    window.location.href = "index.html"
+  },700)
 }
