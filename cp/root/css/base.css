@@ -1,0 +1,51 @@
+:root{
+  --bg:#f8fafc;
+  --card:rgba(255,255,255,.75);
+  --primary:#2563eb;
+  --danger:#ef4444;
+  --muted:#64748b;
+  --radius:18px;
+  --blur:blur(12px);
+}
+
+*{box-sizing:border-box;font-family:Inter,system-ui}
+
+body{
+  margin:0;
+  background:linear-gradient(180deg,#f8fafc,#eef2f7);
+  color:#0f172a;
+}
+
+.glass{
+  background:var(--card);
+  backdrop-filter:var(--blur);
+  border-radius:var(--radius);
+  box-shadow:0 20px 40px rgba(0,0,0,.06);
+}
+
+.fade-up{
+  animation:fadeUp .6s ease both;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:none}
+}
+
+.btn{
+  padding:14px 22px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  transition:.25s;
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 15px 30px rgba(37,99,235,.35);
+}
