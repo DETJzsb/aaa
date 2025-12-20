@@ -1,13 +1,32 @@
-import { supabase } from "./supabase.js"
+import { getJwt } from "./supabase.js"
+import { loadUsers } from "./loadusers.js"
 
-window.updateUser = async (id, role) => {
-  const newRole = prompt("New role", role)
+window.updateUser = async (id, oldRole) => {
+  const newRole = prompt("New role", oldRole)
   if (!newRole) return
 
-  const { error } = await supabase.functions.invoke("update-user", {
-    body: { userId: id, role: newRole }
-  })
+  const token = await getJwt()
 
-  if (error) alert(error.message)
-  else location.reload()
+  const res = await fetch(
+    "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/update-user",
+    {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userId: id,
+        role: newRole
+      })
+    }
+  )
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    alert(data.error)
+  } else {
+    loadUsers()
+  }
 }
