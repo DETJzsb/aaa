@@ -1,3 +1,41 @@
-body { background:#111; display:flex; justify-content:center; align-items:center; height:100vh }
-.login-box { background:#fff; padding:30px; border-radius:10px }
-input,button { width:100%; margin:8px 0 }
+.login-body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at top,#e0e7ff,#f8fafc);
+}
+
+.login-card{
+  width:360px;
+  padding:32px;
+  border-radius:22px;
+  background:rgba(255,255,255,.75);
+  backdrop-filter:blur(14px);
+  box-shadow:0 30px 60px rgba(0,0,0,.15);
+  text-align:center;
+}
+
+.login-card h2{
+  margin:0 0 8px;
+}
+
+.login-card p{
+  margin:0 0 20px;
+  color:var(--muted);
+}
+
+.login-card input{
+  width:100%;
+  padding:14px;
+  margin:8px 0;
+  border-radius:14px;
+  border:1px solid #e5e7eb;
+  outline:none;
+  font-size:15px;
+}
+
+.login-card input:focus{
+  border-color:var(--primary);
+}
