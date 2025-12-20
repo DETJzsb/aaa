@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CP Root</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { margin: 0; display: flex; background: #f1f5f9; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 230px;
+      background: #1e293b;
+      color: #fff;
+      padding: 20px;
+      height: 100vh;
+    }
+    .profile {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .profile img {
+      width: 70px;
+      border-radius: 50%;
+    }
+    .sidebar button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .add { background: #38bdf8; }
+    .logout { background: #ef4444; color: #fff; }
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 25px;
+    }
+
+    .top-tables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 8px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .actions button {
+      margin-right: 5px;
+      padding: 5px 8px;
+      font-size: 12px;
+    }
+    .danger { background: #ef4444; color: #fff; }
+
+    /* Departments */
+    .departments {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #fff;
+      width: 400px;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .modal-content input,
+    .modal-content select {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+    }
+    .parts label {
+      display: block;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="profile">
+      <img src="https://i.pravatar.cc/100" />
+      <h3>Admin</h3>
+    </div>
+    <button class="add" onclick="openModal()">➕ Add User</button>
+    <button class="logout">🚪 Logout</button>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Directeur / Sous Directeur -->
+    <div class="top-tables">
+      <div class="card">
+        <h2>Directeurs</h2>
+        <table>
+          <tr><th>Nom</th><th>Email</th><th>Actions</th></tr>
+          <tr>
+            <td>Ali</td><td>ali@mail.com</td>
+            <td class="actions">
+              <button>Reset PW</button>
+              <button>Edit</button>
+              <button class="danger">Supp</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Sous Directeurs</h2>
+        <table>
+          <tr><th>Nom</th><th>Email</th><th>Actions</th></tr>
+          <tr>
+            <td>Sami</td><td>sami@mail.com</td>
+            <td class="actions">
+              <button>Reset PW</button>
+              <button>Edit</button>
+              <button class="danger">Supp</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Departments -->
+    <div class="departments">
+      <div class="card">
+        <h3>Logistics</h3>
+        <table>
+          <tr><th>User</th><th>Role</th><th>Actions</th></tr>
+          <tr>
+            <td>Hatem</td><td>Supervisor</td>
+            <td class="actions">
+              <button>Reset PW</button>
+              <button>Edit</button>
+              <button class="danger">Supp</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>HR</h3>
+        <table>
+          <tr><th>User</th><th>Role</th><th>Actions</th></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>IT</h3>
+        <table>
+          <tr><th>User</th><th>Role</th><th>Actions</th></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Finance</h3>
+        <table>
+          <tr><th>User</th><th>Role</th><th>Actions</th></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Add User -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2>Add User</h2>
+
+      <input placeholder="Nom *">
+      <input placeholder="Email *">
+
+      <select id="role" onchange="roleChange()">
+        <option value="">Select role *</option>
+        <option value="directeur">Directeur</option>
+        <option value="sous">Sous Directeur</option>
+        <option value="supervisor">Supervisor</option>
+      </select>
+
+      <button id="addIt" style="display:none">Add It</button>
+
+      <select id="dept" style="display:none">
+        <option>Select Department</option>
+        <option>Logistics</option>
+        <option>HR</option>
+        <option>IT</option>
+      </select>
+
+      <div class="parts" id="parts" style="display:none">
+        <label><input type="checkbox"> Part A</label>
+        <label><input type="checkbox"> Part B</label>
+        <label><input type="checkbox"> Part C</label>
+      </div>
+
+      <input placeholder="Tel">
+      <input placeholder="Whatsapp">
+
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      modal.style.display = "flex"
+    }
+    function closeModal() {
+      modal.style.display = "none"
+    }
+    function roleChange() {
+      addIt.style.display = "none"
+      dept.style.display = "none"
+      parts.style.display = "none"
+
+      if (role.value === "directeur") addIt.style.display = "block"
+      if (role.value === "sous") dept.style.display = "block"
+      if (role.value === "supervisor") {
+        dept.style.display = "block"
+        parts.style.display = "block"
+      }
+    }
+  </script>
+
+</body>
+</html>
