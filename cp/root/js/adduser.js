@@ -1,24 +1,38 @@
+import { getJwt } from "./supabase.js"
+import { loadUsers } from "./loadusers.js"
+
 window.addUser = async () => {
-  const body = {
+  const token = await getJwt()
+  if (!token) return alert("Not authenticated")
+
+  const payload = {
     nom: nom.value,
     email: email.value,
-    role: role.value
+    role: role.value,
+    department: department.value || null,
+    part: part.value || null,
+    shift: shift.value || null,
+    ligne: ligne.value || null
   }
 
   const res = await fetch(
     "https://wiovumauoaxrrrsjwkko.supabase.co/functions/v1/add-user",
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" ,
-        "Authorization": `Bearer ${session.access_token}` },
-      body: JSON.stringify(body)
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
     }
   )
 
-  if (!res.ok) {
-    alert("Error adding user")
-    return
-  }
+  const data = await res.json()
 
-  location.reload()
+  if (!res.ok) {
+    alert(data.error || "Add user failed")
+  } else {
+    alert("User added")
+    loadUsers()
+  }
 }
