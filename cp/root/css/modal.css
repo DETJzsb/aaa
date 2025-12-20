@@ -1,0 +1,17 @@
+.modal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.4);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:.3s;
+}
+.modal.show{opacity:1;pointer-events:auto}
+.modal-box{
+  background:white;
+  border-radius:18px;
+  padding:26px;
+  transform:scale(.9);
+  transition:.3s;
+}
+.modal.show .modal-box{transform:scale(1)}
