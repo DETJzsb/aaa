@@ -1,9 +1,8 @@
 import { loadUsers } from "./loadusers.js"
+import { startPresence } from "./presence.js"
 
-window.goBack = () => {
-  window.location.href = "index.html"
-}
+startPresence()
+window.goBack=()=>location.href="index.html"
+search.oninput=()=>loadUsers(search.value)
 
-window.onload = () => {
-  loadUsers()
-}
+loadUsers()
