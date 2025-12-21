@@ -5,7 +5,6 @@
 <title>ROOT Control Panel</title>
 
 <style>
-/* ========== BASE ========== */
 *{box-sizing:border-box;font-family:system-ui}
 body{
   margin:0;
@@ -17,9 +16,9 @@ body{
   min-height:100vh;
 }
 
-/* ========== SIDEBAR ========== */
+/* ===== SIDEBAR PROFILE ===== */
 .sidebar{
-  width:260px;
+  width:280px;
   background:#0f172a;
   color:white;
   padding:24px;
@@ -27,190 +26,188 @@ body{
   flex-direction:column;
   gap:18px;
 }
+
+.profile-box{
+  background:#020617;
+  padding:16px;
+  border-radius:14px;
+}
+
 .avatar{
-  width:44px;height:44px;
+  width:46px;height:46px;
   border-radius:50%;
   background:linear-gradient(135deg,#2563eb,#60a5fa);
-  display:flex;align-items:center;justify-content:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   font-weight:700;
+  margin-bottom:10px;
 }
-.nav-btn{
-  background:none;border:none;
-  color:#cbd5f5;
-  padding:12px;
-  border-radius:12px;
-  text-align:left;
-  cursor:pointer;
-}
-.nav-btn.active{background:#2563eb;color:white}
 
-/* ========== CONTENT ========== */
+.profile-box span{
+  font-size:12px;
+  color:#94a3b8;
+}
+
+.profile-actions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:10px;
+}
+
+.profile-actions button{
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.add-btn{background:#2563eb;color:white}
+.reset-btn{background:#334155;color:white}
+.logout-btn{background:#7f1d1d;color:white}
+
+/* ===== MAIN ===== */
 .content{
   flex:1;
   padding:30px;
 }
 
-/* ===== DASHBOARD ===== */
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;
-  margin-bottom:30px;
-}
-.card{
+/* ===== STATS TABLE ===== */
+.stats-table{
+  width:100%;
   background:white;
-  padding:20px;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  border-radius:14px;
+  margin-bottom:24px;
+  border-collapse:collapse;
 }
-.card.big p{
-  font-size:34px;
-  font-weight:700;
-}
-.dept{
-  display:flex;
-  justify-content:space-between;
+
+.stats-table th,
+.stats-table td{
+  padding:14px;
+  text-align:center;
   font-weight:600;
 }
-.zsb{border-left:5px solid #2563eb}
-.rs{border-left:5px solid #16a34a}
-.jis{border-left:5px solid #f59e0b}
-.njis{border-left:5px solid #ef4444}
 
-/* ===== TOOLBAR ===== */
-.toolbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
-}
-.search-box{
-  position:relative;
-}
-.search-box input{
-  width:220px;
-  padding:8px 32px 8px 12px;
-  border-radius:10px;
-  border:1px solid #e5e7eb;
-}
-.search-box span{
-  position:absolute;
-  right:10px;
-  top:50%;
-  transform:translateY(-50%);
-  opacity:.5;
+.stats-table th{
+  background:#f1f5f9;
+  color:#334155;
 }
 
 /* ===== USERS TABLE ===== */
-table{
+.users-table{
   width:100%;
   border-collapse:separate;
   border-spacing:0 10px;
 }
-thead th{
+
+.users-table thead th{
   text-align:left;
   padding:12px 16px;
   font-size:13px;
-  color:#64748b;
+  color:#475569;
 }
-tbody tr{
+
+.users-table tbody tr{
   background:white;
   border-radius:14px;
-  box-shadow:0 6px 20px rgba(0,0,0,.04);
+  box-shadow:0 8px 20px rgba(0,0,0,.05);
 }
-tbody td{
-  padding:16px;
+
+.users-table tbody td{
+  padding:14px 16px;
 }
+
+.users-table tbody tr:nth-child(even){
+  background:#f8fafc;
+}
+
+/* ===== ACTIONS ===== */
 .actions{
   display:flex;
   gap:6px;
-  opacity:0;
 }
-tbody tr:hover .actions{opacity:1}
-.icon-btn{
-  width:32px;height:32px;
+
+.action-btn{
+  padding:6px 10px;
   border-radius:8px;
   border:none;
-  background:#f1f5f9;
   cursor:pointer;
+  font-size:13px;
 }
-.icon-btn.danger{color:#ef4444}
 
-/* ===== STATUS ===== */
-.dot{
-  width:8px;height:8px;
-  border-radius:50%;
-  display:inline-block;
-}
-.online{background:#22c55e}
-.offline{background:#94a3b8}
+.edit{background:#e0f2fe;color:#0369a1}
+.reset{background:#fef3c7;color:#92400e}
+.delete{background:#fee2e2;color:#991b1b}
 
 /* ===== MOBILE ===== */
-@media(max-width:768px){
+@media(max-width:900px){
   .layout{flex-direction:column}
-  .sidebar{width:100%;flex-direction:row}
-  .search-box input{width:100%}
+  .sidebar{width:100%}
 }
 </style>
 </head>
 
 <body class="layout">
 
-<!-- SIDEBAR -->
+<!-- ===== SIDEBAR ===== -->
 <aside class="sidebar">
-  <div style="display:flex;gap:12px;align-items:center">
+
+  <div class="profile-box">
     <div class="avatar">R</div>
-    <div>
-      <strong>ROOT</strong><br>
-      <span style="font-size:12px;color:#94a3b8">root@system.local</span>
+    <strong id="rootName">ROOT</strong><br>
+    <span id="rootEmail">root@company.com</span><br>
+    <span id="rootAddress">Zone Industrielle, Tunisia</span>
+
+    <div class="profile-actions">
+      <button class="reset-btn">Reset my password</button>
+      <button class="add-btn">Add user</button>
+      <button class="logout-btn">Logout</button>
     </div>
   </div>
 
-  <button class="nav-btn active">Dashboard & Users</button>
 </aside>
 
-<!-- CONTENT -->
+<!-- ===== MAIN CONTENT ===== -->
 <main class="content">
 
-  <!-- DASHBOARD -->
-  <section class="cards">
-    <div class="card big">
-      <h4>Total Users</h4>
-      <p id="totalUsers">0</p>
-    </div>
+  <!-- STATS TABLE -->
+  <table class="stats-table">
+    <thead>
+      <tr>
+        <th>ZSB</th>
+        <th>R-S</th>
+        <th>JIS</th>
+        <th>N-JIS</th>
+        <th>TOTAL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="zsbCount">0</td>
+        <td id="rsCount">0</td>
+        <td id="jisCount">0</td>
+        <td id="njisCount">0</td>
+        <td id="totalCount">0</td>
+      </tr>
+    </tbody>
+  </table>
 
-    <div class="card dept zsb">ZSB <span id="zsbCount">0</span></div>
-    <div class="card dept rs">R-S <span id="rsCount">0</span></div>
-    <div class="card dept jis">JIS <span id="jisCount">0</span></div>
-    <div class="card dept njis">N-JIS <span id="njisCount">0</span></div>
-  </section>
-
-  <!-- USERS -->
-  <section>
-
-    <div class="toolbar">
-      <h3>Users</h3>
-      <div class="search-box">
-        <input id="search" placeholder="Search user…">
-        <span>🔍</span>
-      </div>
-    </div>
-
-    <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Dept</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="users"></tbody>
-    </table>
-
-  </section>
+  <!-- USERS TABLE -->
+  <table class="users-table">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Matricule</th>
+        <th>Email</th>
+        <th>Department</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="users"></tbody>
+  </table>
 
 </main>
 
@@ -222,51 +219,34 @@ const supabase = createClient(
   "PUBLIC_ANON_KEY"
 )
 
-/* ===== LOAD USERS ===== */
-let timer = null
-
-document.getElementById("search").addEventListener("input", e=>{
-  clearTimeout(timer)
-  timer = setTimeout(()=>{
-    loadUsers(e.target.value)
-  }, 400) // 👈 DEBOUNCE
-})
-
-async function loadUsers(q=""){
-  let query = supabase
+async function loadUsers(){
+  const { data } = await supabase
     .from("users")
-    .select("id,nom,email,role,department,is_active")
-
-  if(q){
-    query = query.or(
-      `nom.ilike.%${q}%,email.ilike.%${q}%,role.ilike.%${q}%,department.ilike.%${q}%`
-    )
-  }
-
-  const { data } = await query
+    .select("nom, email, department, role")
 
   // stats
-  totalUsers.textContent = data.length
   zsbCount.textContent = data.filter(u=>u.department==="ZSB").length
   rsCount.textContent  = data.filter(u=>u.department==="R-S").length
   jisCount.textContent = data.filter(u=>u.department==="JIS").length
   njisCount.textContent= data.filter(u=>u.department==="N-JIS").length
+  totalCount.textContent = data.length
 
   const tbody = document.getElementById("users")
   tbody.innerHTML=""
 
   data.forEach(u=>{
-    tbody.innerHTML+=`
+    tbody.innerHTML += `
       <tr>
-        <td><span class="dot ${u.is_active?"online":"offline"}"></span></td>
-        <td>${u.nom||"-"}</td>
+        <td>${u.nom || "-"}</td>
+        <td>—</td>
         <td>${u.email}</td>
+        <td>${u.department || "-"}</td>
         <td>${u.role}</td>
-        <td>${u.department||"-"}</td>
         <td>
           <div class="actions">
-            <button class="icon-btn">✏️</button>
-            <button class="icon-btn danger">🗑️</button>
+            <button class="action-btn reset">Reset PW</button>
+            <button class="action-btn edit">Edit</button>
+            <button class="action-btn delete">Delete</button>
           </div>
         </td>
       </tr>
