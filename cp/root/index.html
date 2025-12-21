@@ -1,64 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>ROOT Dashboard</title>
-
+  <title>Dashboard</title>
   <link rel="stylesheet" href="./css/base.css">
   <link rel="stylesheet" href="./css/index.css">
 </head>
+<body class="layout">
 
-<body>
-
-<!-- حماية الصفحة -->
 <script type="module" src="./js/redirect.js"></script>
 
-<!-- Header -->
-<header class="header glass fade-up">
-  <div class="profile">
-    <div class="avatar" id="avatar">R</div>
-    <div class="profile-info">
-      <strong id="rootName">ROOT</strong><br>
-      <span id="rootEmail">root@system.local</span>
-    </div>
-  </div>
+<aside class="sidebar">
+  <strong>ROOT</strong>
+  <button onclick="goUsers()">Users</button>
+  <button onclick="logout()">Logout</button>
+</aside>
 
-  <button class="btn btn-secondary" onclick="logout()">Logout</button>
-</header>
-
-<!-- Main -->
-<main class="main">
-
-  <!-- Stats -->
-  <section class="cards">
-    <div class="card glass fade-up">
-      <h3>Total Users</h3>
+<main class="content">
+  <div class="cards">
+    <div class="card big">
+      <h4>Total Users</h4>
       <p id="totalUsers">0</p>
     </div>
 
-    <div class="card glass fade-up" style="animation-delay:.1s">
-      <h3>Departments</h3>
-      <p id="totalDepartments">0</p>
-    </div>
+    <div class="card zsb">ZSB <span id="zsbCount"></span></div>
+    <div class="card rs">R-S <span id="rsCount"></span></div>
+    <div class="card jis">JIS <span id="jisCount"></span></div>
+    <div class="card njis">N-JIS <span id="njisCount"></span></div>
+  </div>
 
-    <div class="card glass fade-up" style="animation-delay:.2s">
-      <h3>Supervisors</h3>
-      <p id="totalSupervisors">0</p>
-    </div>
-  </section>
-
-  <!-- Actions -->
-  <section class="actions fade-up" style="animation-delay:.35s">
-    <button class="btn btn-primary" onclick="goUsers()">
-      👥 Manage Users
-    </button>
-  </section>
-
+  <div class="charts">
+    <div id="roleChart" class="chart"></div>
+    <div id="deptChart" class="chart"></div>
+  </div>
 </main>
 
-<!-- Systems -->
 <script type="module" src="./js/index.js"></script>
-<script type="module" src="./js/toast.js"></script>
-
 </body>
 </html>
