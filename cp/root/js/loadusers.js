@@ -62,26 +62,19 @@ export async function loadUsers(search = "") {
     const actionsTd = document.createElement("td")
 
     if (canEdit(currentRole, u.role)) {
-      actionsTd.innerHTML = `
-        <div class="actions">
-          <button
-            class="icon-btn"
-            title="Reset password"
-            onclick="resetPw('${u.id}')"
-          >🔑</button>
+     actionsTd.innerHTML = `
+  <div class="actions">
+    <button class="icon-btn" title="Reset password" onclick="resetPw('${u.id}')">
+      🔑
+    </button>
+    <button class="icon-btn" title="Edit user" onclick="editUser('${u.id}')">
+      ✏️
+    </button>
+    <button class="icon-btn danger" title="Delete user" onclick="deleteUser('${u.id}')">
+      🗑️
+    </button>
+  </div>
 
-          <button
-            class="icon-btn"
-            title="Edit user"
-            onclick="editUser('${u.id}')"
-          >✏️</button>
-
-          <button
-            class="icon-btn danger"
-            title="Delete user"
-            onclick="deleteUser('${u.id}')"
-          >🗑️</button>
-        </div>
       `
     } else {
       actionsTd.innerHTML = `<span style="color:#94a3b8">—</span>`
