@@ -5,20 +5,14 @@
 <title>ROOT Control Panel</title>
 
 <style>
+/* ========== RESET & BASE ========== */
 *{box-sizing:border-box;font-family:system-ui}
-body{
-  margin:0;
-  background:#f8fafc;
-  color:#0f172a;
-}
-.layout{
-  display:flex;
-  min-height:100vh;
-}
+body{margin:0;background:#f8fafc;color:#0f172a}
+.layout{display:flex;min-height:100vh}
 
-/* ===== SIDEBAR PROFILE ===== */
+/* ========== SIDEBAR / PROFILE ========== */
 .sidebar{
-  width:280px;
+  width:300px;
   background:#0f172a;
   color:white;
   padding:24px;
@@ -26,36 +20,26 @@ body{
   flex-direction:column;
   gap:18px;
 }
-
 .profile-box{
   background:#020617;
-  padding:16px;
-  border-radius:14px;
+  padding:18px;
+  border-radius:16px;
 }
-
 .avatar{
-  width:46px;height:46px;
+  width:48px;height:48px;
   border-radius:50%;
   background:linear-gradient(135deg,#2563eb,#60a5fa);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:18px;
   margin-bottom:10px;
 }
-
-.profile-box span{
-  font-size:12px;
-  color:#94a3b8;
-}
-
+.profile-box span{font-size:12px;color:#94a3b8}
 .profile-actions{
   display:flex;
   flex-direction:column;
   gap:10px;
-  margin-top:10px;
+  margin-top:14px;
 }
-
 .profile-actions button{
   padding:10px;
   border-radius:10px;
@@ -63,72 +47,89 @@ body{
   cursor:pointer;
   font-weight:600;
 }
-
 .add-btn{background:#2563eb;color:white}
 .reset-btn{background:#334155;color:white}
 .logout-btn{background:#7f1d1d;color:white}
 
-/* ===== MAIN ===== */
-.content{
-  flex:1;
-  padding:30px;
+/* ========== MAIN CONTENT ========== */
+.content{flex:1;padding:30px}
+
+/* ========== SEARCH & FILTER ========== */
+.search-filter-box{
+  display:flex;
+  gap:12px;
+  margin-bottom:24px;
+  background:#ffffff;
+  padding:14px;
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,.05);
+}
+.search-filter-box input,
+.search-filter-box select{
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  font-size:14px;
 }
 
-/* ===== STATS TABLE ===== */
+/* ========== STATS TABLE ========== */
+.stats-wrapper{
+  background:#f1f5f9;
+  padding:16px;
+  border-radius:16px;
+  border:1px solid #e2e8f0;
+  margin-bottom:30px;
+}
 .stats-table{
   width:100%;
-  background:white;
-  border-radius:14px;
-  margin-bottom:24px;
   border-collapse:collapse;
+  background:#f8fafc;
 }
-
 .stats-table th,
 .stats-table td{
   padding:14px;
   text-align:center;
   font-weight:600;
 }
-
 .stats-table th{
-  background:#f1f5f9;
-  color:#334155;
+  background:#e2e8f0;
 }
 
-/* ===== USERS TABLE ===== */
+/* ========== USERS TABLE ========== */
+.users-wrapper{
+  background:white;
+  padding:16px;
+  border-radius:16px;
+  border:1px solid #e5e7eb;
+}
 .users-table{
   width:100%;
   border-collapse:separate;
   border-spacing:0 10px;
 }
-
 .users-table thead th{
   text-align:left;
   padding:12px 16px;
   font-size:13px;
   color:#475569;
 }
-
 .users-table tbody tr{
-  background:white;
+  background:#ffffff;
   border-radius:14px;
   box-shadow:0 8px 20px rgba(0,0,0,.05);
 }
-
+.users-table tbody tr:nth-child(even){
+  background:#f9fafb;
+}
 .users-table tbody td{
   padding:14px 16px;
 }
 
-.users-table tbody tr:nth-child(even){
-  background:#f8fafc;
-}
-
-/* ===== ACTIONS ===== */
+/* ========== ACTIONS ========== */
 .actions{
   display:flex;
   gap:6px;
 }
-
 .action-btn{
   padding:6px 10px;
   border-radius:8px;
@@ -136,29 +137,28 @@ body{
   cursor:pointer;
   font-size:13px;
 }
-
 .edit{background:#e0f2fe;color:#0369a1}
 .reset{background:#fef3c7;color:#92400e}
 .delete{background:#fee2e2;color:#991b1b}
 
-/* ===== MOBILE ===== */
+/* ========== MOBILE ========== */
 @media(max-width:900px){
   .layout{flex-direction:column}
   .sidebar{width:100%}
+  .search-filter-box{flex-direction:column}
 }
 </style>
 </head>
 
 <body class="layout">
 
-<!-- ===== SIDEBAR ===== -->
+<!-- ========== SIDEBAR / PROFILE ========== -->
 <aside class="sidebar">
-
   <div class="profile-box">
     <div class="avatar">R</div>
     <strong id="rootName">ROOT</strong><br>
     <span id="rootEmail">root@company.com</span><br>
-    <span id="rootAddress">Zone Industrielle, Tunisia</span>
+    <span id="rootAddress">Zone Industrielle – Tunisia</span>
 
     <div class="profile-actions">
       <button class="reset-btn">Reset my password</button>
@@ -166,48 +166,71 @@ body{
       <button class="logout-btn">Logout</button>
     </div>
   </div>
-
 </aside>
 
-<!-- ===== MAIN CONTENT ===== -->
+<!-- ========== MAIN ========== -->
 <main class="content">
 
+  <!-- SEARCH & FILTER -->
+  <div class="search-filter-box">
+    <input id="search" placeholder="Search (name, matricule, email…)">
+    <select id="filterDept">
+      <option value="">All departments</option>
+      <option>ZSB</option>
+      <option>R-S</option>
+      <option>JIS</option>
+      <option>N-JIS</option>
+    </select>
+    <select id="filterRole">
+      <option value="">All roles</option>
+      <option>directeur</option>
+      <option>sous_directeur</option>
+      <option>supervisor</option>
+      <option>team_leader</option>
+      <option>agent</option>
+    </select>
+  </div>
+
   <!-- STATS TABLE -->
-  <table class="stats-table">
-    <thead>
-      <tr>
-        <th>ZSB</th>
-        <th>R-S</th>
-        <th>JIS</th>
-        <th>N-JIS</th>
-        <th>TOTAL</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td id="zsbCount">0</td>
-        <td id="rsCount">0</td>
-        <td id="jisCount">0</td>
-        <td id="njisCount">0</td>
-        <td id="totalCount">0</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="stats-wrapper">
+    <table class="stats-table">
+      <thead>
+        <tr>
+          <th>ZSB</th>
+          <th>R-S</th>
+          <th>JIS</th>
+          <th>N-JIS</th>
+          <th>TOTAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td id="zsbCount">0</td>
+          <td id="rsCount">0</td>
+          <td id="jisCount">0</td>
+          <td id="njisCount">0</td>
+          <td id="totalCount">0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <!-- USERS TABLE -->
-  <table class="users-table">
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Matricule</th>
-        <th>Email</th>
-        <th>Department</th>
-        <th>Role</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="users"></tbody>
-  </table>
+  <div class="users-wrapper">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Matricule</th>
+          <th>Email</th>
+          <th>Department</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="users"></tbody>
+    </table>
+  </div>
 
 </main>
 
@@ -219,28 +242,64 @@ const supabase = createClient(
   "PUBLIC_ANON_KEY"
 )
 
+let allUsers=[]
+let timer=null
+
+search.oninput=()=>{
+  clearTimeout(timer)
+  timer=setTimeout(applyFilters,400)
+}
+filterDept.onchange=applyFilters
+filterRole.onchange=applyFilters
+
 async function loadUsers(){
   const { data } = await supabase
     .from("users")
-    .select("nom, email, department, role")
+    .select("nom, matricule, email, department, role")
 
-  // stats
-  zsbCount.textContent = data.filter(u=>u.department==="ZSB").length
-  rsCount.textContent  = data.filter(u=>u.department==="R-S").length
-  jisCount.textContent = data.filter(u=>u.department==="JIS").length
-  njisCount.textContent= data.filter(u=>u.department==="N-JIS").length
-  totalCount.textContent = data.length
+  allUsers=data
+  applyFilters()
+}
 
-  const tbody = document.getElementById("users")
-  tbody.innerHTML=""
+function applyFilters(){
+  const q=search.value.toLowerCase()
+  const d=filterDept.value
+  const r=filterRole.value
 
+  const filtered=allUsers.filter(u=>{
+    const matchSearch =
+      u.nom?.toLowerCase().includes(q) ||
+      u.matricule?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q) ||
+      u.department?.toLowerCase().includes(q) ||
+      u.role?.toLowerCase().includes(q)
+
+    return (!d || u.department===d) &&
+           (!r || u.role===r) &&
+           matchSearch
+  })
+
+  updateStats(filtered)
+  renderUsers(filtered)
+}
+
+function updateStats(data){
+  zsbCount.textContent=data.filter(u=>u.department==="ZSB").length
+  rsCount.textContent=data.filter(u=>u.department==="R-S").length
+  jisCount.textContent=data.filter(u=>u.department==="JIS").length
+  njisCount.textContent=data.filter(u=>u.department==="N-JIS").length
+  totalCount.textContent=data.length
+}
+
+function renderUsers(data){
+  users.innerHTML=""
   data.forEach(u=>{
-    tbody.innerHTML += `
+    users.innerHTML+=`
       <tr>
-        <td>${u.nom || "-"}</td>
-        <td>—</td>
+        <td>${u.nom||"-"}</td>
+        <td>${u.matricule||"-"}</td>
         <td>${u.email}</td>
-        <td>${u.department || "-"}</td>
+        <td>${u.department||"-"}</td>
         <td>${u.role}</td>
         <td>
           <div class="actions">
@@ -249,8 +308,7 @@ async function loadUsers(){
             <button class="action-btn delete">Delete</button>
           </div>
         </td>
-      </tr>
-    `
+      </tr>`
   })
 }
 
