@@ -1,13 +1,32 @@
 import { supabase } from "./supabase.js"
+import { canEdit } from "./permissions.js"
+import { loadSessionRole, currentRole } from "./session.js"
 
-export async function loadUsers() {
-  const { data, error } = await supabase
+// main loader
+export async function loadUsers(search = "") {
+  await loadSessionRole()
+
+  let query = supabase
     .from("users")
-    .select("*")
+    .select(`
+      id,
+      nom,
+      email,
+      role,
+      department,
+      is_active,
+      last_seen
+    `)
     .order("created_at", { ascending: false })
 
+  if (search) {
+    query = query.ilike("nom", `%${search}%`)
+  }
+
+  const { data, error } = await query
+
   if (error) {
-    alert(error.message)
+    console.error(error)
     return
   }
 
@@ -15,19 +34,78 @@ export async function loadUsers() {
   tbody.innerHTML = ""
 
   data.forEach(u => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${u.nom}</td>
-        <td>${u.email}</td>
-        <td>${u.role}</td>
-        <td>
-          <button onclick="resetPassword('${u.id}')">Reset</button>
-          <button onclick="updateUser('${u.id}','${u.role}')">Edit</button>
-          <button onclick="deleteUser('${u.id}')">Delete</button>
-        </td>
-      </tr>
+    const tr = document.createElement("tr")
+
+    // status dot
+    const statusTd = document.createElement("td")
+    statusTd.innerHTML = `
+      <span class="dot ${u.is_active ? "online" : "offline"}"></span>
     `
+
+    // name
+    const nameTd = document.createElement("td")
+    nameTd.textContent = u.nom || "-"
+
+    // email
+    const emailTd = document.createElement("td")
+    emailTd.textContent = u.email
+
+    // role
+    const roleTd = document.createElement("td")
+    roleTd.textContent = u.role
+
+    // department
+    const deptTd = document.createElement("td")
+    deptTd.textContent = u.department || "-"
+
+    // actions
+    const actionsTd = document.createElement("td")
+
+    if (canEdit(currentRole, u.role)) {
+      actionsTd.innerHTML = `
+        <div class="actions">
+          <button
+            class="icon-btn"
+            title="Reset password"
+            onclick="resetPw('${u.id}')"
+          >🔑</button>
+
+          <button
+            class="icon-btn"
+            title="Edit user"
+            onclick="editUser('${u.id}')"
+          >✏️</button>
+
+          <button
+            class="icon-btn danger"
+            title="Delete user"
+            onclick="deleteUser('${u.id}')"
+          >🗑️</button>
+        </div>
+      `
+    } else {
+      actionsTd.innerHTML = `<span style="color:#94a3b8">—</span>`
+    }
+
+    tr.append(
+      statusTd,
+      nameTd,
+      emailTd,
+      roleTd,
+      deptTd,
+      actionsTd
+    )
+
+    tbody.appendChild(tr)
   })
 }
 
-loadUsers()
+// realtime refresh
+supabase
+  .channel("users-realtime")
+  .on(
+    "postgres_changes",
+    { event: "*", schema: "public", table: "users" },
+    () => loadUsers(document.getElementById("search")?.value || "")
+  )
+  .subscribe()
