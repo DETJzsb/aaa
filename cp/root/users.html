@@ -1,73 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Users Management</title>
-
+  <title>Users</title>
   <link rel="stylesheet" href="./css/base.css">
   <link rel="stylesheet" href="./css/users.css">
 </head>
-
 <body>
 
-<!-- حماية الصفحة -->
 <script type="module" src="./js/redirect.js"></script>
 
-<!-- Header -->
-<header class="header glass fade-up">
-  <h2>Users Management</h2>
-
-  <div class="header-actions">
-    <button class="btn btn-secondary" onclick="goBack()">⬅ Back</button>
-    <button class="btn btn-primary" onclick="openAddUser()">➕ Add User</button>
-  </div>
+<header>
+  <button onclick="goBack()">⬅</button>
+  <input id="search" placeholder="Search">
+  <button onclick="openAddUser()">➕</button>
 </header>
 
-<!-- Main -->
-<main class="main">
+<table>
+  <thead>
+    <tr>
+      <th></th><th>Name</th><th>Email</th><th>Role</th><th>Dept</th><th></th>
+    </tr>
+  </thead>
+  <tbody id="users"></tbody>
+</table>
 
-  <!-- Search -->
-  <div class="search-box fade-up">
-    <input
-      type="text"
-      id="search"
-      placeholder="Search users..."
-      oninput="filterUsers()"
-    >
-  </div>
-
-  <!-- Users Table -->
-  <section class="card glass fade-up" style="animation-delay:.15s">
-    <table class="users-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Department</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-
-      <tbody id="users">
-        <!-- rows injected by JS -->
-      </tbody>
-    </table>
-  </section>
-
-</main>
-
-<!-- Modal -->
 <div id="modal-root"></div>
 
-<!-- Systems -->
 <script type="module" src="./js/users.js"></script>
-<script type="module" src="./js/loadusers.js"></script>
-<script type="module" src="./js/adduser.js"></script>
-<script type="module" src="./js/suppuser.js"></script>
-<script type="module" src="./js/resetpw.js"></script>
-<script type="module" src="./js/modal.js"></script>
-<script type="module" src="./js/toast.js"></script>
-
 </body>
 </html>
