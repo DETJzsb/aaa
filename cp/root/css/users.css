@@ -1,45 +1,26 @@
-body {
-  margin: 0;
-  font-family: system-ui;
-  background: #f4f6f8;
+header{
+  display:flex;gap:10px;
+  padding:20px;align-items:center
 }
-
-.topbar {
-  background: #111;
-  color: white;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+#search{
+  flex:1;padding:10px;
+  border-radius:10px;border:1px solid #e5e7eb
 }
-
-main {
-  padding: 20px;
+table{
+  width:100%;background:white;
+  border-radius:16px;overflow:hidden
 }
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
+th,td{
+  padding:14px;border-bottom:1px solid #f1f5f9
 }
-
-input, select, button {
-  width: 100%;
-  margin: 6px 0;
-  padding: 8px;
+.actions{display:flex;gap:6px}
+.icon-btn{
+  padding:6px 8px;border-radius:8px;
+  border:none;background:#f1f5f9
 }
+.icon-btn.danger{color:#ef4444}
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-}
-
-button {
-  cursor: pointer;
+@media(max-width:768px){
+  header{flex-direction:column}
+  table{font-size:13px}
 }
