@@ -5,20 +5,22 @@
   <link rel="stylesheet" href="./css/base.css">
   <link rel="stylesheet" href="./css/users.css">
 </head>
+
 <body>
 
 <script type="module" src="./js/redirect.js"></script>
 
 <header>
   <button onclick="goBack()">⬅</button>
-  <input id="search" placeholder="Search">
+  <input id="search" placeholder="Search user">
   <button onclick="openAddUser()">➕</button>
 </header>
 
 <table>
   <thead>
     <tr>
-      <th></th><th>Name</th><th>Email</th><th>Role</th><th>Dept</th><th></th>
+      <th></th><th>Name</th><th>Email</th>
+      <th>Role</th><th>Dept</th><th></th>
     </tr>
   </thead>
   <tbody id="users"></tbody>
